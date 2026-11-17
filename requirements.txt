@@ -1,0 +1,32 @@
+# Versi dikunci (==) supaya build Docker selalu menghasilkan lingkungan yang sama.
+# Versi di bawah adalah yang dipakai & diuji. Untuk upgrade: ganti angkanya, jalankan ulang
+# aplikasi + coba fitur utama (login, tambah/edit alat, resertifikasi, PDF rekap), lalu simpan.
+
+# --- Web framework ---
+Flask==3.1.3
+Werkzeug==3.1.9
+Flask-WTF==1.3.0            # proteksi CSRF
+WTForms==3.2.2              # dipakai Flask-WTF
+Flask-Limiter==4.1.1        # rate limit login/register
+limits==5.8.0               # dipakai Flask-Limiter
+gunicorn==26.2.0            # server produksi (Docker)
+Flask-Compress==1.25        # kompresi otomatis HTML/CSS/JS
+brotli==1.2.0               # dipakai Flask-Compress
+backports.zstd==1.8.0; python_version < "3.14"   # dipakai Flask-Compress (Python 3.14 sudah bawaan)
+
+# --- Database ---
+mysql-connector-python==26.7.0
+
+# --- Excel / PDF ---
+pandas==3.0.6
+numpy==2.5.4                # dipakai pandas
+openpyxl==3.1.5
+python-dateutil==2.9.0.post0
+reportlab==5.0.1
+pillow==13.0.0              # dipakai reportlab
+
+# --- Lain-lain ---
+APScheduler==3.11.3         # jadwal rekap otomatis
+python-dotenv==1.2.4        # baca file .env
+boto3==1.43.115             # penyimpanan file Cloudflare R2
+botocore==1.43.115          # harus sama versinya dengan boto3

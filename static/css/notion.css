@@ -1,0 +1,5 @@
+/* Entry point: aturan dipisah menurut urutan aslinya di static/css/parts. */
+@import url("parts/notion_01.css"); /* 185 baris */
+@import url("parts/notion_02.css"); /* 184 baris */
+@import url("parts/notion_03.css"); /* 183 baris */
+@import url("parts/notion_04.css");

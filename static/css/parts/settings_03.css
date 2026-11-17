@@ -1,0 +1,176 @@
+.btn-ghost:hover {
+    background: var(--surface-alt);
+    color: var(--text-main);
+    border-color: var(--border-strong);
+}
+
+/* =============================================
+   USER TABLE
+   ============================================= */
+.user-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.user-table th {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+}
+.user-table td {
+    padding: 14px 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: var(--text-main);
+    font-size: 14px;
+}
+.user-table td:last-child { white-space: nowrap; }
+.user-table tbody tr:hover td { background: rgba(37,99,235,0.02); }
+
+.role-pill {
+    background: var(--primary);
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: inline-block;
+}
+
+.text-right { text-align: right; }
+
+.myself-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    padding-right: 6px;
+}
+
+.btn-icon-s {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 4px;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+.btn-icon-s:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: scale(1.05);
+}
+.btn-icon-s.delete:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -20px;
+    padding: 0 20px;
+}
+
+/* =============================================
+   MODAL
+   ============================================= */
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 16px;
+    box-sizing: border-box;
+}
+.modal-backdrop.active {
+    display: flex;
+    animation: fadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-box {
+    background: var(--surface);
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    position: relative;
+    border: 1px solid var(--border);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.modal-top h3 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+}
+.close-btn:hover {
+    color: var(--danger);
+    background: var(--danger-light);
+    transform: rotate(90deg);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: scale(0.96) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (min-width: 576px) {
+    .profile-content { padding: 0 24px 28px; margin-top: -52px; }
+    .avatar-big { width: 96px; height: 96px; font-size: 40px; }
+    .user-name { font-size: 22px; }
+    .config-card { padding: 24px; }
+    .modal-box { padding: 28px; }
+    .modal-top h3 { font-size: 20px; }
+}
+

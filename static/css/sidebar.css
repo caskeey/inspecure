@@ -1,0 +1,4 @@
+/* Entry point: aturan dipisah menurut urutan aslinya di static/css/parts. */
+@import url("parts/sidebar_01.css"); /* 182 baris */
+@import url("parts/sidebar_02.css"); /* 176 baris */
+@import url("parts/sidebar_03.css"); /* 71 baris */

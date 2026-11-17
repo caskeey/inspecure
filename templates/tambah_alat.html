@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Aset', url_for('alat.data_master')), ('Tambah Aset', none)] %}
+{% set canvas = 'notion' %}
+
+{% block title %}Tambah Alat - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tambah_alat.css') }}">
+{% endblock %}
+
+{% block content %}
+            
+            {% call page_header('ph-plus-circle') %}
+    <h1 class="page-title">Registrasi Aset</h1>
+    <p class="page-desc">Input data alat baru ke database <span class="text-gradient">INSPECURE</span>.</p>
+    <div class="page-actions">
+        <div class="status-indicator">
+                        <span class="dot pulse"></span>
+
+                    </div>
+    </div>
+{% endcall %}
+
+            <div class="form-container">
+                <form method="POST" action="/tambah_alat" enctype="multipart/form-data" id="formAlat"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-grid-layout">
+
+                        <div class="glass-panel highlight-section full-span">
+                            <div class="section-icon"><i class="ph-duotone ph-scan"></i></div>
+                            <div class="section-body">
+                                <label class="form-label">RFID UID (Scan Tag)</label>
+                                <input type="text" name="rfid_uid" value="{{ prefill_uid }}" class="form-input uid-input" placeholder="Tempelkan kartu/tag RFID..." required autofocus autocomplete="off">
+                                <div class="hint-box">
+                                    <i class="ph-fill ph-info"></i>
+                                    <small>Pastikan kursor aktif di kolom ini saat melakukan scanning.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel form-section full-span">
+                            <h3 class="section-title"><i class="ph-duotone ph-tag"></i> Identitas Aset</h3>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nomor Seri (SN)</label>
+                                    <input type="text" name="nomor_serial" class="form-input" placeholder="Cth: SN-2026-X" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nama Alat</label>
+                                    <input type="text" name="nama_alat" class="form-input" placeholder="Cth: Safety Helmet A1" required>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Kategori Pekerjaan</label>
+                                    <div class="select-wrapper">
+                                        <select name="jenis_pekerjaan" id="selectPekerjaan" class="form-input" onchange="updatePeralatan()" required>
+                                            <option value="">-- Pilih Kategori --</option>
+                                            {% for p in pekerjaan %}
+                                                <option value="{{ p.id }}">{{ p.nama_pekerjaan }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <i class="ph-bold ph-caret-down select-icon"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Jenis Peralatan</label>
+                                    <div class="select-wrapper" id="wrapperSelectPeralatan">
+                                        <select name="jenis_peralatan_select" id="selectPeralatan" class="form-input d-none">
+                                            <option value="">-- Pilih Spesifik --</option>
+                                        </select>
+                                        <i class="ph-bold ph-caret-down select-icon d-none" id="iconSelectPeralatan"></i>
+                                    </div>
+                                    <input type="text" name="jenis_peralatan_text" id="inputPeralatan" class="form-input d-none" placeholder="Ketik manual jenis alat...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel form-section">
+                            <h3 class="section-title"><i class="ph-duotone ph-briefcase"></i> Kepemilikan</h3>
+
+                            <div class="form-group">
+                                <label class="form-label">Perusahaan (Client)</label>
+                                <input type="text" id="inputNamaPerusahaan" name="nama_perusahaan" list="list_perusahaan" class="form-input" placeholder="Cth: PT. Sucofindo" autocomplete="off" required>
+                                <datalist id="list_perusahaan">
+                                    {% for pt in perusahaan %}
+                                        <option value="{{ pt.nama_perusahaan }}">
+                                    {% endfor %}
+                                </datalist>
+                                <script id="data-perusahaan-source" type="application/json">
+                                    {{ perusahaan | tojson }}
+                                </script>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Perusahaan</label>
+                                <input type="email" id="inputEmailPerusahaan" name="email_perusahaan" class="form-input" placeholder="Cth: admin@perusahaan.com">
+                                <small class="hint-text" id="hintEmailPerusahaan">Buat kirim rekap data ke perusahaan. Kalau perusahaannya udah pernah ditambahin sebelumnya, isi ini bakal update email lamanya.</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Inspektor</label>
+                                <input type="email" name="email_inspektur" class="form-input" placeholder="nama@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel form-section soft-blue">
+                            <h3 class="section-title"><i class="ph-duotone ph-certificate"></i> Masa Berlaku Sertifikat</h3>
+
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Sertifikasi</label>
+                                <input type="date" name="tgl_sertifikasi" id="tglSertif" class="form-input" min="1900-01-01" max="2100-12-31" onchange="hitungExpired()" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Durasi Berlaku</label>
+                                <div class="input-merged">
+                                    <input type="number" name="durasi_angka" id="durasiAngka" class="form-input" placeholder="0" min="1" oninput="hitungExpired()" required>
+                                    <select name="durasi_satuan" id="durasiSatuan" class="form-select-append" onchange="hitungExpired()">
+                                        <option value="Tahun">Tahun</option>
+                                        <option value="Bulan">Bulan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label class="form-label">Estimasi Expired</label>
+                                <div class="expired-display">
+                                    <i class="ph-fill ph-calendar-check"></i>
+                                    <input type="text" id="viewExpired" class="readonly-input-clean" placeholder="Otomatis terisi..." readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel form-section full-span">
+                            <h3 class="section-title"><i class="ph-duotone ph-file-text"></i> Dokumen Pendukung</h3>
+                            <div class="upload-box">
+                                <div class="upload-visual">
+                                    <i class="ph-duotone ph-cloud-arrow-up"></i>
+                                </div>
+                                <div class="upload-info">
+                                    <h4>Upload Dokumen</h4>
+                                    <p>Klik box ini untuk memilih file (PDF, JPG, PNG)</p>
+                                    <small class="file-name-display">Belum ada file dipilih (Max 5MB)</small>
+                                </div>
+                                <input type="file" name="dokumen_pendukung" class="file-input-hidden"
+                                       accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions full-span">
+                            <button type="submit" class="btn-primary-3d full-width">
+                                <i class="ph-bold ph-floppy-disk"></i> SIMPAN DATA ASET
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script id="data-peralatan-source" type="application/json">
+        {{ peralatan | tojson }}
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/tambah_alat.js') }}"></script>
+{% endblock %}

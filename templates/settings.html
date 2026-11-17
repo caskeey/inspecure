@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Pengaturan', none), ('Akun', none)] %}
+{% set canvas = 'notion' %}
+
+{% block title %}Settings - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+            
+            {% call page_header('ph-gear-six') %}
+    <h1 class="page-title">Pengaturan Akun</h1>
+    <p class="page-desc">Kelola profil dan hak akses sistem.</p>
+{% endcall %}
+
+            <div class="settings-layout">
+
+                <section class="glass-panel theme-preference" aria-labelledby="themePreferenceTitle">
+                    <div class="card-head">
+                        <h3 id="themePreferenceTitle"><i class="ph-duotone ph-sun-dim"></i> Mode Tampilan</h3>
+                    </div>
+                    <p class="theme-preference-desc">Pilih tampilan yang nyaman. Pilihan ini tersimpan di browser ini.</p>
+                    <div class="theme-choice-group" role="group" aria-label="Pilih mode tampilan">
+                        <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false">
+                            <i class="ph-bold ph-sun"></i><span>Terang</span>
+                        </button>
+                        <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="false">
+                            <i class="ph-bold ph-moon"></i><span>Gelap</span>
+                        </button>
+                    </div>
+                </section>
+                
+                <div class="profile-section">
+                    <div class="glass-panel profile-card">
+                        <div class="profile-header-bg"></div>
+                        <div class="profile-content">
+                            <div class="avatar-big">{{ user[0] | upper }}</div>
+                            <h2 class="user-name">{{ user_data.nama_lengkap }}</h2>
+                            <div class="user-role-badge">
+                                {% if session.get('role') == 'Admin' %}
+                                    <i class="ph-fill ph-shield-check"></i> Administrator
+                                {% else %}
+                                    <i class="ph-fill ph-user"></i> Petugas
+                                {% endif %}
+                            </div>
+                            <div class="info-list">
+                                <div class="info-item"><span class="lbl">Username</span><span class="val">{{ user }}</span></div>
+                                <div class="info-item"><span class="lbl">Email</span><span class="val">{{ user_data.email_user }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    
+                    <div class="glass-panel config-card">
+                        <div class="card-head">
+                            <h3><i class="ph-duotone ph-user-circle"></i> Edit Profil</h3>
+                        </div>
+                        <form id="formUpdateProfile">
+                            <div class="form-group">
+                                <label class="form-label">Nama Lengkap</label>
+                                <input type="text" name="nama_lengkap" class="glass-input" value="{{ user_data.nama_lengkap }}" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" name="username" class="glass-input" value="{{ user }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email_user" class="glass-input" value="{{ user_data.email_user }}" required>
+                                </div>
+                            </div>
+                            {% if session.get('role') == 'Admin' %}
+                            <div class="form-footer">
+                                <button type="submit" class="btn-primary-3d">Simpan Profil</button>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+
+                    <div class="glass-panel config-card">
+                        <div class="card-head">
+                            <h3><i class="ph-duotone ph-lock-key"></i> Ganti Password</h3>
+                        </div>
+                        <form id="formChangePass">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Password Lama</label>
+                                    <input type="password" name="old_password" class="glass-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Password Baru</label>
+                                    <input type="password" name="new_password" class="glass-input" required>
+                                </div>
+                            </div>
+                            <div class="form-footer">
+                                <button type="submit" class="btn-ghost">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {% if session.get('role') == 'Admin' %}
+                    <div class="glass-panel config-card">
+                        <div class="card-head with-action">
+                            <h3><i class="ph-duotone ph-users-three"></i> Manajemen User</h3>
+                            <button onclick="openModal('addUserModal')" class="btn-primary-3d small"><i class="ph-bold ph-plus"></i></button>
+                        </div>
+                        <div class="db-view" data-view="table" data-views="table,list,gallery" data-search="1" data-key="users">
+<table class="clean-table user-table">
+                            <thead><tr><th>User</th><th>Role</th><th class="text-right">Aksi</th></tr></thead>
+                            <tbody>
+                                {% for u in all_users %}
+                                <tr>
+                                    <td>{{ u.nama_lengkap }} <small style="color:#64748B">(@{{ u.username }})</small></td>
+                                    <td><span class="role-pill">{{ u.role }}</span></td>
+                                    <td class="text-right">
+                                        {% if u.username != user %}
+                                        <button onclick="openEditModal('{{ u.id_users }}', '{{ u.username }}', '{{ u.nama_lengkap }}', '{{ u.email_user }}', '{{ u.role }}')" class="btn-icon-s edit"><i class="ph-bold ph-pencil-simple"></i></button>
+                                        <button onclick="openResetModal('{{ u.id_users }}', '{{ u.username }}')" class="btn-icon-s key"><i class="ph-bold ph-key"></i></button>
+                                        <button onclick="deleteUser('{{ u.id_users }}', '{{ u.username }}')" class="btn-icon-s delete"><i class="ph-bold ph-trash"></i></button>
+                                        {% else %} <span class="myself-tag">Anda</span> {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+</div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    {% include 'components/settings_user_modals.html' %}
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

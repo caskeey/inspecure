@@ -1,0 +1,46 @@
+/* Penyesuaian kontras komponen pada tema gelap. */
+
+[data-theme="dark"] .callout.callout-red {
+    background: #382321;
+    border-color: #603631;
+    color: #F3D6D1;
+}
+
+[data-theme="dark"] .callout.callout-green {
+    background: #203128;
+    border-color: #365442;
+    color: #D2E8D8;
+}
+
+[data-theme="dark"] .callout.callout-yellow {
+    background: #352D1E;
+    border-color: #594A2E;
+    color: #F0E1BD;
+}
+
+[data-theme="dark"] .callout-body a {
+    color: inherit;
+    text-decoration-color: currentColor;
+}
+
+[data-theme="dark"] .btn-primary-3d,
+[data-theme="dark"] .btn-pair,
+[data-theme="dark"] .btn-kirim-satu,
+[data-theme="dark"] .btn-nfc {
+    background: #343434 !important;
+    color: #F3F3F2 !important;
+    border: 1px solid #4A4A4A !important;
+}
+
+[data-theme="dark"] .btn-primary-3d:hover,
+[data-theme="dark"] .btn-pair:hover,
+[data-theme="dark"] .btn-kirim-satu:hover,
+[data-theme="dark"] .btn-nfc:hover {
+    background: #414141 !important;
+}
+
+[data-theme="dark"] .calendar-card:hover,
+[data-theme="dark"] .agenda-card:hover {
+    background-color: #242424;
+}
+

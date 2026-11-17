@@ -1,0 +1,185 @@
+/* static/css/notion.css — TEMA GLOBAL NOTION (dimuat PALING AKHIR oleh base.html)
+ *
+ * Isi:
+ *  0. Design tokens global (+ alias lama + dark mode)
+ *  1. Shell & canvas        2. Topbar          3. Command palette
+ *  4. Page header           5. Notion block    6. Database view
+ *  7. Form & input          8. Tombol          9. Tabel
+ * 10. Override per halaman (data master, detail, settings, resertifikasi, aktivasi, OCR, form)
+ *
+ * Ganti tema cukup lewat token di bagian 0 (atau <html data-theme="dark">).
+ */
+
+/* =====================================================================
+   0. TOKENS
+   ===================================================================== */
+:root {
+    /* --- token utama --- */
+    --bg-primary:   #FFFFFF;
+    --bg-sidebar:   #F7F6F3;
+    --bg-callout:   #F1F1EF;
+    --text-primary: #2F2F2F;
+    --text-muted:   #787774;
+    --border-color: rgba(55, 53, 47, 0.09);
+    --border-solid: #E9E9E8;
+    --hover-bg:     rgba(55, 53, 47, 0.06);
+    --active-bg:    rgba(55, 53, 47, 0.08);
+    --row-hover:    rgba(55, 53, 47, 0.035);
+    --input-bg:     rgba(242, 241, 238, 0.6);
+    --focus-color:  #2383E2;
+    --focus-ring:   rgba(35, 131, 226, 0.25);
+    --overlay:      rgba(15, 15, 15, 0.55);
+
+    /* tag pastel */
+    --tag-blue-bg:   #D3E5EF; --tag-blue-fg:   #183347;
+    --tag-yellow-bg: #FDECC8; --tag-yellow-fg: #402C1B;
+    --tag-green-bg:  #DBEDDB; --tag-green-fg:  #1C3829;
+    --tag-red-bg:    #FFE2DD; --tag-red-fg:    #5D1715;
+    --tag-gray-bg:   #E3E2E0; --tag-gray-fg:   #32302C;
+
+    /* --- alias (dipakai CSS lama; semua diarahkan ke token utama) --- */
+    --notion-bg: var(--bg-primary);      --notion-sidebar: var(--bg-sidebar);
+    --notion-text: var(--text-primary);  --notion-muted: var(--text-muted);
+    --notion-border: var(--border-color);--notion-hover: var(--hover-bg);
+    --notion-active: var(--active-bg);   --notion-callout: var(--bg-callout);
+
+    --primary: var(--text-primary);  --primary-dark: var(--text-primary);  --primary-hover: var(--text-primary);
+    --primary-light: var(--bg-sidebar);
+    --accent: var(--text-primary);   --accent-hover: var(--text-primary);
+    --accent-light: var(--hover-bg); --accent-ink: var(--bg-primary);
+    --success: var(--tag-green-fg);  --success-light: var(--tag-green-bg);
+    --warning: var(--tag-yellow-fg); --warning-light: var(--tag-yellow-bg);
+    --danger:  var(--tag-red-fg);    --danger-light:  var(--tag-red-bg);
+    --text-main: var(--text-primary);
+    --text-secondary: var(--text-primary);
+    --text-grey: var(--text-muted);
+    --text-disabled: #A6A4A0;
+    --card-bg: var(--bg-primary); --bg-body: var(--bg-primary); --surface: var(--bg-primary);
+    --surface-alt: var(--bg-sidebar);
+    --border: var(--border-solid); --card-border: var(--border-solid); --border-strong: #D8D7D4;
+    --glass-bg: var(--bg-primary); --glass-border: var(--border-solid);
+    --glass-shadow: none; --card-shadow: none;
+    --shadow-sm: none; --shadow-md: none; --shadow-lg: 0 8px 24px rgba(15, 15, 15, 0.12);
+    --r-sm: 3px; --r-md: 4px; --r-lg: 6px; --r-xl: 8px; --radius: 6px;
+    --canvas-w: 900px;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #191919; --bg-sidebar: #202020; --bg-callout: #252525;
+    --text-primary: #EBEBEA; --text-muted: #9B9B9B;
+    --border-color: rgba(255, 255, 255, 0.09); --border-solid: #2F2F2F;
+    --hover-bg: rgba(255, 255, 255, 0.07); --active-bg: rgba(255, 255, 255, 0.10);
+    --row-hover: rgba(255, 255, 255, 0.04); --input-bg: #252525;
+    --tag-blue-bg: #243B4A;   --tag-blue-fg: #BFD9EA;
+    --tag-yellow-bg: #4A3B1F; --tag-yellow-fg: #F1D9A0;
+    --tag-green-bg: #223D2F;  --tag-green-fg: #B5DDC3;
+    --tag-red-bg: #4A2824;    --tag-red-fg: #F2B7AE;
+    --tag-gray-bg: #373737;   --tag-gray-fg: #D4D4D3;
+    --border-strong: #3A3A3A; --text-disabled: #6B6B6B;
+}
+
+/* =====================================================================
+   1. SHELL & CANVAS
+   ===================================================================== */
+body, html { background: var(--bg-primary); color: var(--text-primary); }
+body { padding: 0; font-size: 15px; line-height: 1.7; }
+.gradient-blob { display: none !important; }
+
+.app-container { gap: 0; padding: 0; background: var(--bg-primary); border-radius: 0; box-shadow: none; height: 100vh; }
+
+.main-content,
+.main-content.has-topbar { padding: 0; border-radius: 0; box-shadow: none; background: var(--bg-primary); }
+
+.main-content.canvas-notion { --canvas-w: 900px; }
+.main-content.canvas-wide   { --canvas-w: 1100px; }
+.main-content.canvas-full   { --canvas-w: 100%; }
+html.canvas-pref-full .main-content.has-topbar { --canvas-w: 100%; }
+
+.page-canvas { max-width: var(--canvas-w); margin: 0 auto; padding: 2rem 1.5rem 6rem; transition: max-width 0.2s ease; }
+.page-canvas.has-cover { padding-top: 0; }
+.page-canvas .page-icon { margin-top: 0; }
+.page-canvas.has-cover .page-icon { margin-top: -36px; }
+
+.sidebar { background: var(--bg-sidebar); }
+
+/* =====================================================================
+   2. TOPBAR
+   ===================================================================== */
+.page-topbar { background: color-mix(in srgb, var(--bg-primary) 92%, transparent); }
+.topbar-spacer { flex: 1; }
+
+.topbar-search {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 30px; padding: 0 8px 0 10px;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border-solid); border-radius: 4px;
+    font: inherit; font-size: 13.5px; cursor: pointer;
+    transition: background 0.1s ease, transform 0.1s ease;
+}
+.topbar-search:hover { background: var(--hover-bg); color: var(--text-primary); }
+.topbar-search:active { transform: scale(0.98); }
+.topbar-search .ts-text { min-width: 110px; text-align: left; }
+.topbar-search kbd, .cmdk-input-row kbd {
+    font-family: inherit; font-size: 11px; line-height: 1; padding: 3px 5px;
+    border: 1px solid var(--border-solid); border-radius: 3px; background: var(--bg-callout); color: var(--text-muted);
+}
+
+.topbar-icon-btn {
+    width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; border: none; border-radius: 4px; color: var(--text-muted);
+    font-size: 17px; cursor: pointer; transition: background 0.1s ease, transform 0.1s ease;
+}
+.topbar-icon-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
+.topbar-icon-btn:active { transform: scale(0.96); }
+.topbar-icon-btn[aria-pressed="true"] { background: var(--active-bg); color: var(--text-primary); }
+.topbar-theme-toggle {
+    min-height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 0 10px; background: var(--bg-primary); border: 1px solid var(--border-solid);
+    border-radius: 6px; color: var(--text-primary); font: inherit; font-size: 12.5px;
+    cursor: pointer; white-space: nowrap; transition: background 0.1s ease, border-color 0.1s ease;
+}
+.topbar-theme-toggle:hover { background: var(--hover-bg); border-color: var(--border-color); }
+.topbar-theme-toggle i { font-size: 15px; }
+.topbar-theme-toggle[aria-pressed="true"] { background: var(--active-bg); }
+
+.topbar-avatar { display: inline-flex; margin-left: 2px; border-radius: 4px; }
+.topbar-avatar img { width: 24px; height: 24px; border-radius: 4px; display: block; }
+.topbar-avatar:hover { background: var(--hover-bg); outline: 4px solid var(--hover-bg); }
+
+@media (max-width: 768px) {
+    .topbar-search .ts-text, .topbar-search kbd { display: none; }
+    .topbar-search { padding: 0 8px; }
+    #widthToggle { display: none; }
+    .topbar-theme-toggle { width: 32px; padding: 0; }
+    .topbar-theme-toggle span { display: none; }
+}
+
+/* =====================================================================
+   3. COMMAND PALETTE
+   ===================================================================== */
+.cmdk-backdrop {
+    position: fixed; inset: 0; z-index: 10000; display: flex; justify-content: center; align-items: flex-start;
+    padding-top: 14vh; background: var(--overlay); opacity: 0; transition: opacity 0.12s ease;
+}
+.cmdk-backdrop[hidden] { display: none; }
+.cmdk-backdrop.show { opacity: 1; }
+.cmdk-box {
+    width: 560px; max-width: 92vw; background: var(--bg-primary); color: var(--text-primary);
+    border-radius: 8px; box-shadow: 0 0 0 1px rgba(15,15,15,0.05), 0 16px 40px rgba(15,15,15,0.25); overflow: hidden;
+}
+.cmdk-input-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+.cmdk-input-row i { font-size: 18px; color: var(--text-muted); }
+.cmdk-input-row input { flex: 1; border: none; background: transparent; font: inherit; font-size: 16px; color: var(--text-primary); box-shadow: none !important; padding: 0; }
+.cmdk-list { list-style: none; max-height: 340px; overflow-y: auto; padding: 6px; margin: 0; }
+.cmdk-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 4px; cursor: pointer; font-size: 14.5px; }
+.cmdk-item i { font-size: 17px; color: var(--text-muted); width: 20px; text-align: center; }
+.cmdk-item.active { background: var(--active-bg); }
+.cmdk-label { flex: 1; }
+.cmdk-hint { font-size: 12px; color: var(--text-muted); }
+.cmdk-empty { padding: 18px; text-align: center; color: var(--text-muted); font-size: 14px; }
+.cmdk-foot { display: flex; gap: 16px; padding: 8px 14px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); background: var(--bg-sidebar); }
+
+/* =====================================================================
+   4. PAGE HEADER STANDAR (ikon, H1, deskripsi, properti, aksi)
+   ===================================================================== */
+.page-header { display: block; margin: 0 0 28px; background: none; border: none; box-shadow: none; padding: 0; }

@@ -1,0 +1,64 @@
+    <div id="addUserModal" class="modal-backdrop">
+        <div class="glass-card modal-box">
+            <div class="modal-top"><h3>Tambah User</h3><button onclick="closeModal('addUserModal')" class="close-btn"><i class="ph-bold ph-x"></i></button></div>
+            <form id="formAddUser">
+                <div class="form-group"><label>Nama</label><input type="text" name="nama_lengkap" class="glass-input" required></div>
+                <div class="form-group"><label>Email</label><input type="email" name="email_user" class="glass-input" required></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Username</label><input type="text" name="username" class="glass-input" required></div>
+                    <div class="form-group"><label>Role</label>
+                        <div class="select-wrapper"><select name="role" class="glass-input"><option value="Petugas">Petugas</option><option value="Admin">Admin</option></select><i class="ph-bold ph-caret-down select-icon"></i></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password Awal</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="addUserPassword" class="glass-input" placeholder="Masukkan password (min. 8 karakter)" minlength="8" required>
+                        <button type="button" class="toggle-pass" onclick="togglePass('addUserPassword', this)"><i class="ph-bold ph-eye"></i></button>
+                    </div>
+                    <button type="button" class="btn-generate-pw" onclick="generatePassword('addUserPassword')">
+                        <i class="ph-bold ph-shuffle"></i> Generate Password Acak
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary-3d full-width">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="modal-backdrop">
+        <div class="glass-card modal-box">
+            <div class="modal-top"><h3>Edit User</h3><button onclick="closeModal('editUserModal')" class="close-btn"><i class="ph-bold ph-x"></i></button></div>
+            <form id="formEditUser">
+                <input type="hidden" name="user_id" id="edit_user_id">
+                <div class="form-group"><label>Nama</label><input type="text" name="nama_lengkap" id="edit_nama" class="glass-input" required></div>
+                <div class="form-group"><label>Email</label><input type="email" name="email_user" id="edit_email" class="glass-input" required></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Username</label><input type="text" name="username" id="edit_username" class="glass-input" required></div>
+                    <div class="form-group"><label>Role</label>
+                        <div class="select-wrapper"><select name="role" id="edit_role" class="glass-input"><option value="Petugas">Petugas</option><option value="Admin">Admin</option></select><i class="ph-bold ph-caret-down select-icon"></i></div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary-3d full-width">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="resetModal" class="modal-backdrop">
+        <div class="glass-card modal-box">
+            <div class="modal-top"><h3>Reset Password</h3><button onclick="closeModal('resetModal')" class="close-btn"><i class="ph-bold ph-x"></i></button></div>
+            <p>User: <b id="targetUsername"></b></p>
+            <form id="formResetUser">
+                <input type="hidden" name="user_id" id="targetUserId">
+                <div class="form-group">
+                    <div class="password-wrapper">
+                        <input type="password" name="new_password" id="resetPassword" class="glass-input" placeholder="Password baru (min. 8 karakter)" minlength="8" required>
+                        <button type="button" class="toggle-pass" onclick="togglePass('resetPassword', this)"><i class="ph-bold ph-eye"></i></button>
+                    </div>
+                    <button type="button" class="btn-generate-pw" onclick="generatePassword('resetPassword')">
+                        <i class="ph-bold ph-shuffle"></i> Generate Password Acak
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary-3d full-width">Reset</button>
+            </form>
+        </div>
+    </div>

@@ -1,0 +1,45 @@
+# INSPECURE -- Synology Container Manager (Project) / docker compose
+# Variabel ${...} dibaca otomatis dari file .env di folder yang sama.
+
+services:
+  db:
+    image: mysql:8.4            # JANGAN diganti MariaDB: db.sql memakai collation MySQL (utf8mb4_0900_ai_ci)
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?isi DB_ROOT_PASSWORD di .env}
+      MYSQL_DATABASE: db_inspecure
+      MYSQL_USER: inspecure
+      MYSQL_PASSWORD: ${DB_PASSWORD:?isi DB_PASSWORD di .env}
+      TZ: Asia/Jakarta
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql:ro   # hanya dijalankan saat db_data masih kosong
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Akses aplikasi lewat reverse proxy HTTPS DSM, bukan port HTTP langsung.
+      # Untuk uji LAN sementara, ubah ke "8085:5000" lalu kembalikan setelah proxy siap.
+      - "127.0.0.1:8085:5000"
+    env_file: .env
+    environment:
+      MYSQLHOST: db
+      MYSQLUSER: inspecure
+      MYSQLPASSWORD: ${DB_PASSWORD}
+      MYSQLDATABASE: db_inspecure
+      BEHIND_PROXY: "true"
+      TZ: Asia/Jakarta
+    volumes:
+      - ./uploads:/app/static/uploads
+      - ./rekap:/app/static/rekap_resertifikasi
+      - ./backups:/app/static/backups

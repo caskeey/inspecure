@@ -1,0 +1,185 @@
+/* static/css/input_ocr.css — Corporate Enterprise Design System */
+
+:root {
+    --primary:       #1E3A5F;
+    --accent:        #2563EB;
+    --accent-light:  #DBEAFE;
+    --text-main:     #0F172A;
+    --text-grey:     #64748B;
+    --text-muted:    #64748B;
+    --surface:       #FFFFFF;
+    --surface-alt:   #F8FAFC;
+    --border:        #E2E8F0;
+    --border-strong: #CBD5E1;
+    --success:       #16A34A;
+    --warning:       #D97706;
+    --glass-bg:      rgba(255, 255, 255, 0.95);
+    --glass-border:  #E2E8F0;
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --font-head: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* =============================================
+   LAYOUT GRID
+   ============================================= */
+.ocr-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* =============================================
+   FORM PANEL (Left)
+   ============================================= */
+.form-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.panel-header {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
+}
+.panel-header h3 {
+    font-family: var(--font-head);
+    font-size: 14.5px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.panel-header i { color: var(--accent); font-size: 17px; }
+
+#ocrForm {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+    overflow: hidden;
+}
+
+/* Upload Zone */
+.upload-zone { margin-bottom: 16px; flex-shrink: 0; }
+
+.upload-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px !important;
+    cursor: pointer;
+    background: var(--surface-alt);
+    border: 1px dashed var(--accent);
+    border-radius: var(--r-md);
+    transition: all 0.15s ease;
+}
+.upload-label:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+}
+
+.icon-upload {
+    width: 34px;
+    height: 34px;
+    background: var(--accent-light);
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+.text-upload span { display: block; font-weight: 700; font-size: 13.5px; color: var(--text-main); }
+.text-upload small { font-size: 12px; color: var(--text-muted); }
+
+.file-status {
+    font-size: 12.5px;
+    color: var(--success);
+    margin-top: 7px;
+    font-weight: 700;
+    text-align: center;
+    display: none;
+    background: #DCFCE7;
+    padding: 4px 8px;
+    border-radius: var(--r-sm);
+}
+
+/* Scrollable Form Area */
+.scrollable-form {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-bottom: 14px;
+}
+.scrollable-form::-webkit-scrollbar { width: 4px; }
+.scrollable-form::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 10px; }
+
+.form-group { margin-bottom: 13px; position: relative; }
+.lbl {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.glass-input {
+    width: 100%;
+    padding: 8px 13px;
+    background: var(--surface-alt);
+    border: 1.5px solid transparent;
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 400;
+    transition: all 0.15s ease;
+}
+.glass-input:focus {
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Active OCR Target — KEEP AMBER (functional UX indicator) */
+.glass-input.active-target {
+    border-color: #F59E0B !important;
+    background: #FFFBEB !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
+}
+
+.row-group { display: flex; gap: 10px; }
+.input-merged { display: flex; width: 100%; }
+.form-select-append {
+    width: 82px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-left: 1px solid var(--border-strong);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+    padding: 0 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-main);
+    cursor: pointer;
+    font-family: var(--font-body);
+}
+
+/* Select wrapper */
+.select-wrapper { position: relative; }

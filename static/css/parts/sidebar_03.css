@@ -1,0 +1,71 @@
+.btn-nfc-modal {
+    width: 100%;
+    padding: 8px 14px;
+    border-radius: 4px;
+    background: var(--notion-bg);
+    border: 1px solid var(--border-strong);
+    color: var(--notion-text);
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.btn-nfc-modal:hover { background: var(--notion-hover); }
+.btn-nfc-modal.scanning { background: var(--tag-blue-bg); color: var(--tag-blue-fg); border-color: transparent; }
+.btn-nfc-modal:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.nfc-modal-status {
+    font-size: 12.5px; font-weight: 500; text-align: center; margin-top: 8px;
+    min-height: 18px; display: none; align-items: center; justify-content: center; gap: 6px;
+}
+.nfc-modal-status.show    { display: flex; }
+.nfc-modal-status.info    { color: var(--tag-blue-fg); }
+.nfc-modal-status.error   { color: #E03E3E; }
+.nfc-modal-status.success { color: #0F7B6C; }
+
+.sidebar-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 15, 15, 0.4);
+    z-index: 9990;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+.sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar, .menu-item, .toggle-btn { transition: none !important; }
+}
+
+
+/* =============================================
+   UX TAMBAHAN
+   ============================================= */
+.menu-item.active::before {
+    content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+    border-radius: 0 3px 3px 0; background: var(--notion-text);
+}
+.menu-item:active { transform: scale(0.99); }
+.menu-item:focus-visible, .user-card:focus-visible, .logout-btn:focus-visible, .toggle-btn:focus-visible {
+    box-shadow: 0 0 0 2px rgba(35, 131, 226, 0.45);
+}
+
+/* scrollbar menu: tipis, hanya saat di-hover */
+.sidebar-menu { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.sidebar-menu:hover { scrollbar-color: rgba(55,53,47,0.2) transparent; }
+.sidebar-menu::-webkit-scrollbar { display: block; width: 6px; }
+.sidebar-menu::-webkit-scrollbar-thumb { background: transparent; border-radius: 6px; }
+.sidebar-menu:hover::-webkit-scrollbar-thumb { background: rgba(55,53,47,0.2); }
+
+/* tooltip saat sidebar menyempit (diposisikan oleh shell_sidebar_tips.js) */
+.sb-tip {
+    position: fixed; z-index: 10001; transform: translateY(-50%) translateX(-4px);
+    padding: 4px 9px; border-radius: 4px; pointer-events: none; white-space: nowrap;
+    background: #2F2F2F; color: #fff; font-size: 12.5px; line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(15,15,15,0.25); opacity: 0; transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.sb-tip.show { opacity: 1; transform: translateY(-50%) translateX(0); }

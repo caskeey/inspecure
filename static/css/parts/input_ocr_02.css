@@ -1,0 +1,180 @@
+.select-icon {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+select.glass-input { appearance: none; cursor: pointer; }
+
+.form-footer {
+    padding-top: 13px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+/* =============================================
+   VIEWER PANEL (Right)
+   ============================================= */
+.viewer-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.viewer-toolbar {
+    background: var(--primary);
+    color: white;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 60;
+    flex-shrink: 0;
+}
+.tools-left, .tools-right { display: flex; gap: 7px; align-items: center; }
+
+.tool-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--r-sm);
+    border: none;
+    background: rgba(255,255,255,0.10);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    font-size: 14px;
+}
+.tool-btn:hover { background: var(--accent); }
+.tool-text {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    min-width: 56px;
+    text-align: center;
+    opacity: 0.75;
+}
+
+.ocr-viewport {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px;
+    background-color: #E2E8F0;
+}
+
+#pages-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    width: 100%;
+}
+
+.page-block {
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transform-origin: top center;
+    background: white;
+    border-radius: 3px;
+}
+.page-block img { display: block; max-width: 100%; border-radius: 3px; }
+
+.page-label {
+    position: absolute;
+    top: -24px;
+    left: 0;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.85);
+    padding: 3px 8px;
+    border-radius: var(--r-sm);
+}
+
+.page-ocr-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; }
+
+/* OCR Queue Status */
+.ocr-queue-status {
+    position: sticky;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    margin: 0 auto;
+    background: var(--primary);
+    color: white;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.20);
+    z-index: 55;
+}
+.ocr-queue-status .mini-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.30);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* OCR Highlights */
+.ocr-word {
+    position: absolute;
+    background: rgba(37, 99, 235, 0.07);
+    border-radius: 2px;
+    pointer-events: none;
+    transition: background 0.12s, border-color 0.12s;
+}
+
+/* KEEP GREEN for selected words — functional OCR indicator */
+.ocr-word.selected {
+    background: rgba(22, 163, 74, 0.30);
+    border: 1px solid #16A34A;
+    z-index: 10;
+}
+
+/* Rubber-band selection box */
+.ocr-selection-box {
+    position: absolute;
+    border: 1.5px dashed var(--accent);
+    background: rgba(37, 99, 235, 0.08);
+    pointer-events: none;
+    z-index: 20;
+    border-radius: 2px;
+}
+
+/* Toolbar hint */
+.viewer-toolbar .tools-left::after {
+    content: "Klik = 1 kata  •  Klik & geser = pilih beberapa";
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.45);
+    margin-left: 14px;
+    white-space: nowrap;
+}
+@media (max-width: 1024px) {
+    .viewer-toolbar .tools-left::after { display: none; }
+}
+
+/* =============================================
+   LOADING & STATES
+   ============================================= */

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - INSPECURE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/inter/inter.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+    <script src="{{ url_for('static', filename='js/theme_init.js') }}"></script>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-code">{{ code }}</div>
+        <h1 class="error-title">{{ title }}</h1>
+        <p class="error-desc">{{ message }}</p>
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary">← Kembali ke Beranda</a>
+            <button type="button" class="btn btn-ghost" onclick="history.back()">Halaman Sebelumnya</button>
+        </div>
+    </div>
+</body>
+</html>

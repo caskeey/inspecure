@@ -1,0 +1,20 @@
+{# components/flash_messages.html
+   Render notifikasi hasil aksi (flash()) di halaman ini. WAJIB di-include di
+   SETIAP halaman yang punya sidebar/header, persis setelah header dibuka.
+   Kalau tidak di-include, flash message dari aksi di halaman ini (hapus,
+   simpan, update, dst) TIDAK akan konsumsi/hilang -- dia bakal numpuk di
+   session dan baru muncul nanti pas user kebetulan buka halaman lain yang
+   render get_flashed_messages, keluar semua sekaligus dan kelihatan gak
+   nyambung sama apa yang barusan dilakukan user. #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-stack">
+        {% for category, msg in messages %}
+        <div class="flash-msg {{ 'success' if category == 'success' else 'error' }}">
+            <i class="ph-bold {{ 'ph-check-circle' if category == 'success' else 'ph-warning-circle' }}"></i>
+            <span>{{ msg }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}

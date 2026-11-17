@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Aset', url_for('alat.data_master')), ('Smart Input', none)] %}
+{% set canvas = 'full' %}
+
+{% block title %}Smart OCR - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/input_ocr.css') }}">
+{% endblock %}
+
+{% block content %}
+            
+            {% call page_header('ph-scan') %}
+    <h1 class="page-title">Smart OCR Input</h1>
+    <p class="page-desc">Upload dokumen & klik teks pada gambar untuk mengisi form otomatis.</p>
+    <div class="page-actions">
+        <div class="status-indicator">
+                        <span class="dot pulse"></span>
+                        <span class="status-text"></span>
+                    </div>
+    </div>
+{% endcall %}
+
+            <div class="ocr-layout">
+                
+                <div class="glass-panel form-panel">
+                    <div class="panel-header">
+                        <h3><i class="ph-duotone ph-list-dashes"></i> Form Data Aset</h3>
+                    </div>
+                    
+                    <form action="/tambah_alat" method="POST" enctype="multipart/form-data" id="ocrForm"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <div class="upload-zone">
+                            <label class="upload-label glass-input">
+                                <div class="icon-upload"><i class="ph-duotone ph-cloud-arrow-up"></i></div>
+                                <div class="text-upload">
+                                    <span>Pilih Dokumen</span>
+                                    <small>PDF, JPG, PNG (Max 5MB)</small>
+                                </div>
+                                <input type="file" id="fileScan" name="dokumen_pendukung" 
+                                       accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx" hidden required>
+                            </label>
+                            <div id="fileInfo" class="file-status">Belum ada file dipilih</div>
+                        </div>
+
+                        <div class="scrollable-form">
+                            <div class="form-group">
+                                <label class="lbl">RFID UID</label>
+                                <input type="text" name="rfid_uid" class="glass-input target-input" placeholder="Klik teks di kanan..." required>
+                            </div>
+                            <div class="form-group">
+                                <label class="lbl">Nomor Seri</label>
+                                <input type="text" name="nomor_serial" class="glass-input target-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="lbl">Nama Alat</label>
+                                <input type="text" name="nama_alat" class="glass-input target-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="lbl">Tipe / Model</label>
+                                <input type="text" name="tipe_alat" class="glass-input target-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="lbl">Jenis Pekerjaan</label>
+                                <div class="select-wrapper">
+                                    <select name="jenis_pekerjaan" id="selectPekerjaan" class="glass-input">
+                                        <option value="">- Pilih Manual -</option>
+                                        {% for p in pekerjaan %}
+                                            <option value="{{ p.id }}">{{ p.nama_pekerjaan }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <i class="ph-bold ph-caret-down select-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="select-wrapper">
+                                    <select name="jenis_peralatan_select" id="selectPeralatan" class="glass-input d-none"></select>
+                                    <i class="ph-bold ph-caret-down select-icon d-none" id="iconSelectPeralatan"></i>
+                                </div>
+                                <input type="text" name="jenis_peralatan_text" id="inputPeralatan" class="glass-input d-none target-input" placeholder="Jenis alat...">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="lbl">Perusahaan</label>
+                                <input type="text" id="inputNamaPerusahaan" name="nama_perusahaan" list="list_perusahaan" class="glass-input target-input" placeholder="Ketik/Pilih PT..." autocomplete="off">
+                                <datalist id="list_perusahaan">
+                                    {% for pt in perusahaan %}
+                                        <option value="{{ pt.nama_perusahaan }}">
+                                    {% endfor %}
+                                </datalist>
+                                <script id="data-perusahaan-source" type="application/json">
+                                    {{ perusahaan | tojson }}
+                                </script>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="lbl">Email Perusahaan</label>
+                                <input type="email" id="inputEmailPerusahaan" name="email_perusahaan" class="glass-input target-input" placeholder="Cth: admin@perusahaan.com">
+                                <small class="hint-text" id="hintEmailPerusahaan">Buat kirim rekap data ke perusahaan. Kalau perusahaannya udah pernah ditambahin sebelumnya, isi ini bakal update email lamanya.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="lbl">Email Inspektor</label>
+                                <input type="email" name="email_inspektur" class="glass-input target-input">
+                            </div>
+
+                            <div class="row-group">
+                                <div class="form-group" style="flex:1;">
+                                    <label class="lbl">Tgl Sertifikasi</label>
+                                    <input type="date" name="tgl_sertifikasi" class="glass-input" min="1900-01-01" max="2100-12-31" required>
+                                </div>
+                                <div class="form-group" style="flex:1;">
+                                    <label class="lbl">Durasi</label>
+                                    <div class="input-merged">
+                                        <input type="number" name="durasi_angka" value="1" class="glass-input target-input" style="border-right:0; border-radius: 12px 0 0 12px;">
+                                        <select name="durasi_satuan" class="form-select-append">
+                                            <option value="Tahun">Tahun</option>
+                                            <option value="Bulan">Bulan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn-primary-3d full-width">
+                                <i class="ph-bold ph-floppy-disk"></i> SIMPAN DATA
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="glass-panel viewer-panel">
+                    
+                    <div class="viewer-toolbar">
+                        <div class="tools-left">
+                            <button type="button" class="tool-btn" id="prevPage" title="Ke Halaman Sebelumnya"><i class="ph-bold ph-caret-left"></i></button>
+                            <span id="pageIndicator" class="tool-text">Page 0/0</span>
+                            <button type="button" class="tool-btn" id="nextPage" title="Ke Halaman Berikutnya"><i class="ph-bold ph-caret-right"></i></button>
+                        </div>
+                        <div class="tools-right">
+                            <button type="button" class="tool-btn" id="zoomOut"><i class="ph-bold ph-minus"></i></button>
+                            <span id="zoomIndicator" class="tool-text">100%</span>
+                            <button type="button" class="tool-btn" id="zoomIn"><i class="ph-bold ph-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="ocr-viewport">
+                        
+                        <div id="ocr-placeholder" class="state-box">
+                            <div class="icon-placeholder"><i class="ph-duotone ph-file-search"></i></div>
+                            <h3>Preview Dokumen</h3>
+                            <p>Pilih file di panel kiri untuk memulai preview & OCR otomatis.</p>
+                        </div>
+
+                        <div id="loadingOcr" class="loading-overlay" style="display:none;">
+                            <div class="loader-spinner"></div>
+                            <p id="statusOcr">Memproses dokumen...</p>
+                        </div>
+
+                        <div id="pages-container" style="display:none;"></div>
+                        <canvas id="pdf-render" style="display:none;"></canvas>
+
+                        <div id="ocrQueueStatus" class="ocr-queue-status" style="display:none;"></div>
+
+                        <div id="doc-preview" class="state-box" style="display:none;">
+                            <div class="icon-doc"><i class="ph-duotone ph-microsoft-word-logo"></i></div>
+                            <h3 id="doc-name">Document.docx</h3>
+                            <div class="warning-chip">
+                                <i class="ph-fill ph-warning"></i>
+                                <span>Format ini tidak mendukung fitur Klik-Teks (OCR). Silakan isi form manual.</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script id="data-peralatan-source" type="application/json">{{ peralatan | tojson }}</script>
+    <!-- Urutan WAJIB kayak gini, karena saling pakai variabel/fungsi punya file sebelumnya:
+         1. form     -> deklarasiin `activeInput`
+         2. render   -> deklarasiin `pdfDoc`, `pageNum`, `pageBlocks`, `pageWordsCache`
+         3. tesseract -> pakai variabel dari render.js
+         4. interact -> pakai fungsi/variabel dari ketiganya (drag-select, zoom, dst) -->
+    <script src="{{ url_for('static', filename='js/input_ocr_form.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/input_ocr_render.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/input_ocr_tesseract.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/input_ocr_selection.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/input_ocr_navigation.js') }}"></script>
+{% endblock %}

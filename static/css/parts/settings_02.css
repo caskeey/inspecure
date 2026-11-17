@@ -1,0 +1,182 @@
+.card-head {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+.card-head.with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.card-head h3 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--primary);
+}
+
+/* =============================================
+   FORM STYLES
+   ============================================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    margin-bottom: 14px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.password-wrapper { position: relative; }
+.password-wrapper .glass-input { padding-right: 44px; }
+.toggle-pass {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 17px;
+    transition: color 0.15s ease;
+    padding: 0;
+}
+.toggle-pass:hover { color: var(--text-main); }
+
+.btn-generate-pw {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+    padding: 7px 14px;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+}
+.btn-generate-pw:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.glass-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    color: var(--text-main);
+    font-weight: 400;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+.glass-input:focus {
+    background: var(--surface);
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+.glass-input:read-only {
+    background: var(--border);
+    color: var(--text-muted);
+    cursor: default;
+}
+
+.select-wrapper { position: relative; }
+.select-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+select.glass-input {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 36px;
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+.form-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-primary-3d {
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    font-family: var(--font-body);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+.btn-primary-3d:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.30);
+}
+.btn-primary-3d:active { transform: translateY(0); }
+.btn-primary-3d.full-width { width: 100%; }
+.btn-primary-3d.small {
+    padding: 7px 14px;
+    font-size: 13px;
+    min-height: 36px;
+}
+
+.btn-ghost {
+    padding: 10px 22px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-body);
+    min-height: 44px;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}

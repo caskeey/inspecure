@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSPECURE - Asset Monitoring System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/inter/inter.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/bold.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/fill.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <script src="{{ url_for('static', filename='js/theme_init.js') }}"></script>
+</head>
+<body>
+
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#home" class="logo">
+                <span class="logo-mark"><i class="ph-fill ph-shield-check"></i></span>
+                <span>INSPECURE</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#home">Beranda</a>
+                <a href="#kenapa">Kenapa Inspecure</a>
+                <a href="#tentang">Tentang Sistem</a>
+            </div>
+
+            <div class="nav-actions">
+                <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti tema" title="Ganti tema">
+                    <i class="ph-bold ph-moon" id="themeIcon"></i>
+                </button>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-text">Daftar</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Masuk</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+
+        <h1 class="hero-title anim" style="--i:1">
+            Sistem Manajemen Aset<br><span class="hl">Terintegrasi.</span>
+        </h1>
+
+        <p class="hero-desc anim" style="--i:2">
+            Platform monitoring sertifikasi, lokasi, dan status alat operasional perusahaan berbasis RFID/NFC. Silakan masuk untuk mengakses dashboard.
+        </p>
+
+        <div class="cta-group anim" style="--i:3">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                Masuk ke Sistem <i class="ph-bold ph-arrow-right"></i>
+            </a>
+            <a href="#kenapa" class="btn btn-ghost btn-lg">
+                Pelajari Fitur <i class="ph-bold ph-arrow-down"></i>
+            </a>
+        </div>
+
+        <div class="client-strip anim" style="--i:4">
+            <p>Dipakai untuk memantau</p>
+            <div class="logos">
+                <span><i class="ph-fill ph-cube"></i> Aset Operasional</span>
+                <span><i class="ph-fill ph-certificate"></i> Sertifikasi Alat</span>
+                <span><i class="ph-fill ph-radio"></i> Tag RFID/NFC</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ilustrasi tampilan dashboard (dekoratif) -->
+    <div class="preview anim" style="--i:5" aria-hidden="true">
+        <div class="window">
+            <div class="win-bar">
+                <span class="win-dots"><i></i><i></i><i></i></span>
+                <span class="win-title"><i class="ph-bold ph-lock-simple"></i> inspecure / data-master</span>
+            </div>
+            <div class="win-body">
+                <div class="pg-icon"><i class="ph-fill ph-cube"></i></div>
+                <div class="pg-title">Data Master Alat</div>
+                <div class="pg-desc">Seluruh aset beserta status sertifikasinya.</div>
+
+                <div class="pg-tool">
+                    <div class="seg"><span class="on">Table</span><span>List</span><span>Gallery</span></div>
+                    <div class="pg-search"><i class="ph-bold ph-magnifying-glass"></i> Cari alat…</div>
+                </div>
+
+                <div class="tr th"><span>Nama Alat</span><span>Perusahaan</span><span>Berlaku s/d</span><span>Status</span></div>
+                <div class="tr" style="--i:0"><span class="nm">Crane Mobile 50T</span><span class="mut">PT Contoh Utama</span><span class="mut">12 Mar 2027</span><span><span class="tag green">Valid</span></span></div>
+                <div class="tr" style="--i:1"><span class="nm">Forklift FD30</span><span class="mut">PT Contoh Utama</span><span class="mut">04 Des 2026</span><span><span class="tag yellow">Segera habis</span></span></div>
+                <div class="tr" style="--i:2"><span class="nm">Pressure Vessel PV-02</span><span class="mut">PT Mitra Teknik</span><span class="mut">21 Jan 2027</span><span><span class="tag green">Valid</span></span></div>
+                <div class="tr" style="--i:3"><span class="nm">Genset 500 kVA</span><span class="mut">PT Mitra Teknik</span><span class="mut">30 Sep 2026</span><span><span class="tag red">Expired</span></span></div>
+                <div class="tr" style="--i:4"><span class="nm">Boiler B-101</span><span class="mut">PT Contoh Utama</span><span class="mut">18 Agu 2027</span><span><span class="tag green">Valid</span></span></div>
+            </div>
+        </div>
+
+        <div class="float-note">
+            <i class="ph-fill ph-scan"></i>
+            <div><b>Tag RFID terbaca</b><span>Sertifikasi valid</span></div>
+        </div>
+    </div>
+
+    <section class="section" id="kenapa">
+        <div class="section-head reveal">
+            <span class="tag blue">Kenapa Inspecure</span>
+            <h2>Satu sistem untuk semua siklus aset.</h2>
+            <p>Dari pendaftaran alat, aktivasi RFID, sampai resertifikasi — semua tercatat rapi dan bisa dipantau kapan saja.</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card reveal" style="--i:0">
+                <div class="feature-icon"><i class="ph-fill ph-scan"></i></div>
+                <h3>Pelacakan RFID/NFC</h3>
+                <p>Setiap alat diaktivasi dengan tag unik, memudahkan identifikasi dan pemindaian saat inspeksi lapangan.</p>
+            </div>
+            <div class="feature-card reveal" style="--i:1">
+                <div class="feature-icon"><i class="ph-fill ph-clock-countdown"></i></div>
+                <h3>Monitoring Sertifikasi</h3>
+                <p>Notifikasi otomatis untuk alat yang masa berlaku sertifikasinya akan atau sudah habis.</p>
+            </div>
+            <div class="feature-card reveal" style="--i:2">
+                <div class="feature-icon"><i class="ph-fill ph-clipboard-text"></i></div>
+                <h3>Riwayat &amp; Dokumen Lengkap</h3>
+                <p>Seluruh riwayat resertifikasi dan dokumen pendukung tersimpan terpusat, mudah diaudit.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="tentang">
+        <div class="about-grid">
+            <div class="callout reveal">
+                <div>
+                    <h3>Dibangun untuk tim operasional, <span>bukan admin belaka.</span></h3>
+                    <p>Antarmuka dirancang agar cepat dipakai di lapangan maupun di meja kerja — dari scan RFID portable sampai rekap laporan.</p>
+                </div>
+                <div class="about-stats">
+                    <div><b>3</b><span>Peran akses pengguna</span></div>
+                    <div><b>1</b><span>Dashboard terpusat</span></div>
+                </div>
+            </div>
+
+            <div class="about-list reveal" style="--i:1">
+                <div class="about-row">
+                    <i class="ph-fill ph-lock-key"></i>
+                    <div>
+                        <h4>Akses Terbatas &amp; Aman</h4>
+                        <p>Hanya pengguna terautentikasi yang bisa mengelola data aset perusahaan.</p>
+                    </div>
+                </div>
+                <div class="about-row">
+                    <i class="ph-fill ph-bluetooth"></i>
+                    <div>
+                        <h4>Terhubung Perangkat Portable</h4>
+                        <p>Mendukung reader RFID/NFC via Bluetooth untuk scan langsung dari perangkat mobile.</p>
+                    </div>
+                </div>
+                <div class="about-row">
+                    <i class="ph-fill ph-file-search"></i>
+                    <div>
+                        <h4>Smart Input via OCR</h4>
+                        <p>Percepat input data alat baru dengan pemindaian dokumen sertifikasi otomatis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta reveal">
+        <h2>Siap mengelola aset Anda?</h2>
+        <p>Masuk dengan akun Anda, atau buat akun baru untuk mulai.</p>
+        <div class="cta-group">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Masuk <i class="ph-bold ph-arrow-right"></i></a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-ghost btn-lg">Buat Akun</a>
+        </div>
+    </section>
+
+    <footer class="landing-footer">
+        <span>INSPECURE — Internal Asset Monitoring System</span>
+        <span>Authorized personnel only</span>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+</body>
+</html>

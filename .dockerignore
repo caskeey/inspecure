@@ -1,0 +1,27 @@
+# rahasia & data -> tidak boleh masuk image
+.env
+.secret_key
+db.sql
+db_data
+uploads
+rekap
+static/uploads
+static/rekap_resertifikasi
+static/backups
+static/docs
+backups
+
+# sampah
+.venv
+.venv-1
+venv
+.git
+.vscode
+_manual_assets
+manual_render
+Manual Book INSPECURE untuk Inspektor*
+**/__pycache__
+*.pyc
+*.zip
+Dockerfile
+docker-compose.yml

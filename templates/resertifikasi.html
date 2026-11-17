@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Resertifikasi', none), ('Rekap', none)] %}
+{% set canvas = 'wide' %}
+
+{% block title %}Rekap Resertifikasi - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resertifikasi.css') }}">
+{% endblock %}
+
+{% block content %}
+            {% call page_header('ph-paper-plane-tilt') %}
+    <h1 class="page-title">Rekap Resertifikasi</h1>
+    <p class="page-desc">Peralatan yang akan memasuki masa resertifikasi dalam {{ bulan_kedepan }} bulan ke depan (H-{{ bulan_kedepan }} bulan).</p>
+    <div class="page-actions">
+        <button type="button" class="btn-primary-3d" id="btnKirimSemua" onclick="jalankanSemua()">
+                        <i class="ph-bold ph-paper-plane-tilt"></i> <span>Kirim Semua Sekarang</span>
+                    </button>
+    </div>
+{% endcall %}
+
+            <div class="jadwal-info glass-panel">
+                <i class="ph-fill ph-clock-countdown"></i>
+                <div>
+                    <b>Jadwal otomatis:</b> sistem akan membuat rekap &amp; mengirim email ini secara otomatis
+                    setiap <b>tanggal {{ jadwal_hari }}</b> pukul <b>{{ '%02d'|format(jadwal_jam) }}:{{ '%02d'|format(jadwal_menit) }} WIB</b>.
+                    Admin mendapat pengingat pratinjau tiga hari sebelumnya melalui email (jika SMTP dan email Admin dikonfigurasi).
+                    Tombol di bawah ini hanya untuk generate/kirim manual di luar jadwal itu.
+                </div>
+            </div>
+
+            <div class="stats-container" style="margin-bottom: 20px;">
+                <div class="stat-card glass-panel">
+                    <div class="icon-box purple"><i class="ph-fill ph-buildings"></i></div>
+                    <div class="stat-info">
+                        <span class="label">Perusahaan Terdampak</span>
+                        <span class="value">{{ total_perusahaan }}</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="icon-box red"><i class="ph-fill ph-warning"></i></div>
+                    <div class="stat-info">
+                        <span class="label">Total Alat Perlu Resertifikasi</span>
+                        <span class="value">{{ total_alat }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if not daftar_perusahaan %}
+            <div class="glass-panel empty-state">
+                <div class="empty-state-visual">
+                    <div class="empty-state-ring"></div>
+                    <i class="ph-duotone ph-calendar-check"></i>
+                </div>
+                <h3>Belum ada alat yang perlu resertifikasi</h3>
+                <p>Tidak ada alat yang jatuh tempo dalam {{ bulan_kedepan }} bulan kalender ke depan.</p>
+                <div class="empty-state-hint">
+                    <i class="ph-bold ph-info"></i>
+                    <span>
+                        Rekap berikutnya otomatis dicek tiap tanggal {{ jadwal_hari }}. Kalau ada alat baru
+                        yang expirednya masuk window itu, kartunya akan muncul otomatis di sini &mdash;
+                        gak perlu refresh manual, cukup buka halaman ini lagi nanti.
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+
+            {% for g in daftar_perusahaan %}
+            <div class="glass-panel rekap-card">
+                <div class="rekap-card-head">
+                    <div class="rekap-card-identity">
+                        <div class="company-avatar">{{ g.nama_perusahaan[:2]|upper }}</div>
+                        <div>
+                            <h3>{{ g.nama_perusahaan }} <span class="alat-count-badge">{{ g.alat|length }} alat</span></h3>
+                            <p class="sub">
+                                <i class="ph-bold ph-envelope-simple"></i> {{ g.email_perusahaan or '-' }}
+                                {% if g.emails_inspektur %}
+                                    &nbsp;•&nbsp; <i class="ph-bold ph-user-focus"></i> {{ g.emails_inspektur|join(', ') }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="rekap-card-actions">
+                        {% if session.get('role') == 'Admin' and g.id_perusahaan in perusahaan_menunggu_otomatis %}
+                        <a href="{{ url_for('resertifikasi.preview_email_otomatis', id_perusahaan=g.id_perusahaan) }}"
+                           class="btn-action" title="Pratinjau email dan PDF yang akan dikirim otomatis" aria-label="Pratinjau email otomatis">
+                            <i class="ph-bold ph-envelope-simple-open"></i>
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('resertifikasi.preview_rekap', id_perusahaan=g.id_perusahaan) }}" target="_blank" class="btn-action" title="Preview PDF">
+                            <i class="ph-bold ph-eye"></i>
+                        </a>
+                        <a href="{{ url_for('resertifikasi.download_rekap', id_perusahaan=g.id_perusahaan) }}" class="btn-action edit" title="Download PDF">
+                            <i class="ph-bold ph-file-pdf"></i>
+                        </a>
+                        {% if session.get('role') == 'Admin' %}
+                        <button type="button"
+                                class="btn-primary-3d small btn-kirim-satu"
+                                data-id-perusahaan="{{ g.id_perusahaan }}"
+                                data-target="perusahaan"
+                                title="Kirim rekap ke email perusahaan saja"
+                                {% if not g.email_perusahaan or g.email_perusahaan.strip() in ('', '-') %}disabled{% endif %}>
+                            <i class="ph-bold ph-buildings"></i> Ke Perusahaan
+                        </button>
+                        <button type="button"
+                                class="btn-primary-3d small btn-kirim-satu"
+                                data-id-perusahaan="{{ g.id_perusahaan }}"
+                                data-target="inspektur"
+                                title="Kirim rekap ke email inspektur saja"
+                                {% if not g.emails_inspektur %}disabled{% endif %}>
+                            <i class="ph-bold ph-user-focus"></i> Ke Inspektur
+                        </button>
+                        <button type="button"
+                                class="btn-primary-3d small btn-kirim-satu"
+                                data-id-perusahaan="{{ g.id_perusahaan }}"
+                                data-target="both"
+                                title="Kirim rekap ke perusahaan dan inspektur sekaligus">
+                            <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Semua
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="modern-table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Alat</th>
+                                <th>Seri</th>
+                                <th>Masa Berlaku</th>
+                                <th>Tanggal Resertifikasi</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in g.alat %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td class="fw-bold">{{ a.nama_alat }}</td>
+                                <td class="text-mono">{{ a.nomor_serial or '-' }}</td>
+                                <td>{{ a.durasi_angka }} {{ a.durasi_satuan }}</td>
+                                <td><div class="date-chip">{{ a.tgl_expired }}</div></td>
+                                <td>
+                                    {% if a.hari_tersisa is not none %}
+                                        {% if a.hari_tersisa <= 30 %}
+                                        <span class="urgensi-badge urgensi-merah"><i class="ph-fill ph-warning-circle"></i> {{ a.hari_tersisa }} hari lagi</span>
+                                        {% elif a.hari_tersisa <= 60 %}
+                                        <span class="urgensi-badge urgensi-kuning"><i class="ph-fill ph-clock"></i> {{ a.hari_tersisa }} hari lagi</span>
+                                        {% else %}
+                                        <span class="urgensi-badge urgensi-biru"><i class="ph-fill ph-calendar"></i> {{ a.hari_tersisa }} hari lagi</span>
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script src="{{ url_for('static', filename='js/resertifikasi.js') }}"></script>
+{% endblock %}

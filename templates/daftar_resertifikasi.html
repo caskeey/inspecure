@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Resertifikasi', none), ('Cari Alat', none)] %}
+{% set canvas = 'notion' %}
+
+{% block title %}Resertifikasi - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_alat.css') }}">
+{% endblock %}
+
+{% block content %}
+            {% call page_header('🔁') %}
+    <h1 class="page-title">Resertifikasi</h1>
+    <p class="page-desc">Masukkan atau scan UID tag alat yang mau diresertifikasi. Alat apapun bisa diresertifikasi, gak harus nunggu expired dulu.</p>
+{% endcall %}
+
+            <div class="form-container" style="max-width: 640px;">
+
+                <div class="glass-panel form-section">
+                    <h3 class="section-title"><i class="ph-duotone ph-scan"></i> Cari Alat</h3>
+
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <label class="form-label">UID / Tag RFID</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="uidInput" class="glass-input" placeholder="Ketik atau scan UID di sini..." autocomplete="off" autofocus>
+                            <button type="button" id="btnCari" class="btn-primary-3d" style="white-space:nowrap;">
+                                <i class="ph-bold ph-magnifying-glass"></i> Cari
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hint-box">
+                        <i class="ph-fill ph-info"></i>
+                        <small>Bisa diketik manual, di-scan pakai reader RFID/NFC portable, atau tempel HP (Web NFC).</small>
+                    </div>
+                </div>
+
+                <div id="loadingBox" style="display:none; text-align:center; padding: 30px;">
+                    <i class="ph-duotone ph-circle-notch" style="font-size: 32px; color: var(--primary); animation: spin 1s linear infinite;"></i>
+                    <p class="text-grey" style="margin-top:8px;">Mencari data alat...</p>
+                </div>
+
+                <div id="resultCard" class="glass-panel form-section" style="display:none;">
+                    <h3 class="section-title"><i class="ph-duotone ph-cube"></i> Data Alat Ditemukan</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Nama Alat</label>
+                            <input type="text" id="rNama" class="glass-input locked-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nomor Seri</label>
+                            <input type="text" id="rSerial" class="glass-input locked-input" readonly>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Perusahaan</label>
+                            <input type="text" id="rPerusahaan" class="glass-input locked-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status Saat Ini</label>
+                            <input type="text" id="rStatus" class="glass-input locked-input" readonly>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Tgl Sertifikasi</label>
+                            <input type="text" id="rTglSertif" class="glass-input locked-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tgl Expired</label>
+                            <input type="text" id="rTglExpired" class="glass-input locked-input" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <a href="#" id="btnResertifikasi" class="btn-primary-3d full-width">
+                            <i class="ph-bold ph-certificate"></i> Resertifikasi Alat Ini
+                        </a>
+                    </div>
+                </div>
+
+                <div id="notFoundCard" class="glass-panel form-section" style="display:none; text-align:center;">
+                    <i class="ph-duotone ph-tag" style="font-size: 40px; color:#F97316;"></i>
+                    <h3 style="margin: 10px 0 6px;">UID Belum Terdaftar</h3>
+                    <p class="text-grey" style="margin-bottom: 18px;">
+                        Tag dengan UID <strong id="nfUid">-</strong> belum terhubung ke aset mana pun.
+                    </p>
+                    <a href="#" id="btnDaftarBaru" class="btn-primary-3d full-width">
+                        <i class="ph-bold ph-plus-circle"></i> Registrasi Aset Baru dengan UID Ini
+                    </a>
+                </div>
+
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script src="{{ url_for('static', filename='js/daftar_resertifikasi.js') }}"></script>
+{% endblock %}

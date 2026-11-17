@@ -1,0 +1,143 @@
+            <div class="callout {% if t_warn %}callout-red{% else %}callout-green{% endif %}" role="status">
+                <span class="callout-icon"><i class="ph-bold {% if t_warn %}ph-warning{% else %}ph-check-circle{% endif %}"></i></span>
+                <div class="callout-body">
+                    {% if t_warn %}
+                    <b>{{ t_warn }} aset perlu tindakan.</b> Periksa daftar <a href="#monitoring">Monitoring Expired</a> di bawah dan jadwalkan resertifikasi sebelum masa berlaku habis.
+                    {% else %}
+                    <b>Semua aset berstatus valid.</b> Tidak ada tindakan yang diperlukan saat ini.
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="stats-container">
+                    <a class="stat-card" href="{{ url_for('alat.data_master') }}">
+                        <div class="icon-box purple"><i class="ph-fill ph-cube"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Total Aset</span>
+                            <span class="value">{{ total_aset }}</span>
+                        </div>
+                    </a>
+                    <a class="stat-card" href="{{ url_for('alat.data_master') }}">
+                        <div class="icon-box green"><i class="ph-fill ph-shield-check"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Status Valid</span>
+                            <span class="value">{{ total_valid }}</span>
+                        </div>
+                    </a>
+                    <a class="stat-card" href="{{ url_for('alat.data_master') }}">
+                        <div class="icon-box red"><i class="ph-fill ph-warning-octagon"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Perlu Tindakan</span>
+                            <span class="value">{{ total_warning }}</span>
+                        </div>
+                    </a>
+                </div>
+
+                <details class="toggle-block">
+                    <summary>Panduan status sertifikasi <span class="toggle-hint">klik untuk membuka</span></summary>
+                    <div class="toggle-body">
+                        <ul>
+                            <li><span class="tag green">Valid</span> Masa berlaku sertifikat masih panjang.</li>
+                            <li><span class="tag yellow">Warning</span> Mendekati tanggal expired, mulai siapkan resertifikasi.</li>
+                            <li><span class="tag red">Expired</span> Sertifikat sudah habis dan alat perlu segera ditindaklanjuti.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <div class="content-row">
+                    
+                    <div class="glass-panel main-panel" id="monitoring">
+                        <div class="panel-header">
+                            <div class="header-title">
+                                <h3><i class="ph-duotone ph-clock-countdown"></i> Monitoring Expired</h3>
+                                <p>Daftar alat yang masa berlakunya akan segera habis.</p>
+                            </div>
+                            <a href="{{ url_for('alat.data_master') }}" class="btn-link">Lihat Semua <i class="ph-bold ph-arrow-right"></i></a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="clean-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Alat</th>
+                                        <th>Perusahaan</th>
+                                        <th>Tgl Expired</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in urgent_assets %}
+                                    <tr>
+                                        <td>
+                                            <div class="td-title">{{ item.nama_alat }}</div>
+                                            <div class="td-sub"><i class="ph-bold ph-barcode"></i> {{ item.rfid_uid }}</div>
+                                        </td>
+                                        <td>{{ item.nama_perusahaan }}</td>
+                                        <td>
+                                            <div class="date-chip">
+                                                {{ item.tgl_expired }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if item.status_sertifikasi == 'Expired' %}
+                                                <span class="status-badge red">Expired</span>
+                                            {% else %}
+                                                <span class="status-badge orange">Warning</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn-icon" title="Inspeksi"><i class="ph-bold ph-magnifying-glass"></i></button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5" class="empty-state">
+                                            <div class="empty-icon"><i class="ph-duotone ph-check-circle"></i></div>
+                                            <p>Aman! Tidak ada aset yang urgent saat ini.</p>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <details class="toggle-block" open>
+                        <summary>Kalender &amp; Agenda</summary>
+                    <div class="side-panel-wrapper">
+                        
+                        <div class="glass-panel calendar-card">
+                            <div class="cal-header">
+                                <span id="calMonthYear">...</span>
+                                <div class="cal-nav">
+                                    <button type="button" onclick="changeMonth(-1)" aria-label="Bulan sebelumnya" title="Bulan sebelumnya"><i class="ph-bold ph-caret-left"></i></button>
+                                    <button type="button" onclick="changeMonth(1)" aria-label="Bulan berikutnya" title="Bulan berikutnya"><i class="ph-bold ph-caret-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="weekdays">
+                                <span title="Minggu">M</span><span title="Senin">S</span><span title="Selasa">S</span><span title="Rabu">R</span><span title="Kamis">K</span><span title="Jumat">J</span><span title="Sabtu">S</span>
+                            </div>
+                            <div class="days-grid" id="calGrid"></div>
+                        </div>
+
+                        <div class="glass-panel agenda-card">
+                            <div class="panel-header small">
+                                <h3 id="agendaTitle">Agenda Terdekat</h3>
+                            </div>
+                            
+                            <div class="event-list" id="eventListContainer">
+                                </div>
+
+                            <button onclick="openEventModal()" class="btn-primary-3d full-width">
+                                <i class="ph-bold ph-plus"></i> Tambah Jadwal
+                            </button>
+                        </div>
+
+                    </div>
+                    </details>
+                </div>
+
+            </div>

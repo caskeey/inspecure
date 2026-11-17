@@ -1,0 +1,4 @@
+/* Entry point: aturan dipisah menurut urutan aslinya di static/css/parts. */
+@import url("parts/aktivasi_rfid_01.css"); /* 184 baris */
+@import url("parts/aktivasi_rfid_02.css"); /* 180 baris */
+@import url("parts/aktivasi_rfid_03.css"); /* 189 baris */

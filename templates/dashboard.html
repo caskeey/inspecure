@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Dashboard', none)] %}
+{% set canvas = 'notion' %}
+{% set cover = true %}
+
+{% block title %}Dashboard - INSPECURE{% endblock %}
+
+{% block head_after_base %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_page.css') }}">
+{% endblock %}
+
+{% block content %}
+            {% set t_total = total_aset|default(0)|int %}
+            {% set t_valid = total_valid|default(0)|int %}
+            {% set t_warn  = total_warning|default(0)|int %}
+            {% set pct = (t_valid * 100 / t_total) if t_total else 0 %}
+
+            {% call page_header('ph-squares-four') %}
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-desc">Halo, <b>{{ session['user'] }}</b>. Ringkasan status aset dan jadwal sertifikasi terkini.</p>
+        {% call props() %}
+            {% call prop('ph-user', 'Pengguna') %}{{ session['user'] }}{% endcall %}
+            {% call prop('ph-calendar-blank', 'Tanggal') %}<span class="date-badge" id="currentDateDisplay">Loading...</span>{% endcall %}
+            {% call prop('ph-tag', 'Status') %}
+                <span class="tag green">{{ '%.0f'|format(pct) }}% valid</span>
+                {% if t_warn %}<span class="tag red">{{ t_warn }} perlu tindakan</span>{% endif %}
+            {% endcall %}
+        {% endcall %}
+        <div class="page-actions">
+            <button type="button" class="btn-primary-3d bt-status-pill" data-state="idle" onclick="openBtModal()">
+                <i class="ph-bold ph-scan"></i>
+                <span class="bt-status-pill-text">Scan Portable RFID/NFC</span>
+            </button>
+        </div>
+    {% endcall %}
+
+    {% include 'components/dashboard_panels.html' %}
+{% endblock %}
+
+{% block after_shell %}
+
+    <div id="eventModal" class="modal-backdrop">
+        <div class="glass-card modal-box">
+            <div class="modal-top">
+                <h3>Jadwal Baru</h3>
+                <button onclick="closeEventModal()" class="close-btn"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <form id="addEventForm">
+                <div class="input-group">
+                    <label>Nama Kegiatan</label>
+                    <input type="text" name="title" required placeholder="Contoh: Kalibrasi Alat...">
+                </div>
+                <div class="input-group">
+                    <label>Tanggal Pelaksanaan</label>
+                    <input type="date" name="date" required>
+                </div>
+                <button type="submit" class="btn-primary-3d full-width">Simpan Jadwal</button>
+            </form>
+        </div>
+    </div>
+
+    <script id="calendar-data" type="application/json">{{ events_json | default([]) | tojson }}</script>
+    <script src="{{ url_for('static', filename='js/dashboard_calendar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

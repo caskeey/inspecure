@@ -1,0 +1,110 @@
+                        <div class="tabs-nav">
+                            <button class="tab-btn active" onclick="switchTab('specs')">Spesifikasi</button>
+                            <button class="tab-btn" onclick="switchTab('docs')">Dokumen</button>
+                            <button class="tab-btn" onclick="switchTab('history')">Riwayat</button>
+                        </div>
+<div id="tab-specs" class="tab-content active">
+    <h3 class="tab-title">Informasi Sertifikasi</h3>
+    <div class="specs-table-wrapper">
+        <table class="specs-table">
+            <tbody>
+                <tr>
+                    <td>Kategori Pekerjaan</td>
+                    <td>{{ aset.jenis_pekerjaan or '-' }}</td>
+                </tr>
+                <tr>
+                    <td>Jenis Peralatan</td>
+                    <td>{{ aset.nama_peralatan or '-' }}</td>
+                </tr>
+                <tr>
+                    <td>Email Inspektur</td>
+                    <td>{{ aset.email_inspektur or '-' }}</td>
+                </tr>
+                <tr>
+                    <td>Email Perusahaan</td>
+                    <td>{{ aset.email_perusahaan or '-' }}</td>
+                </tr>
+                <tr>
+                    <td>Tanggal Sertifikasi</td>
+                    <td>{{ aset.tgl_sertifikasi }}</td>
+                </tr>
+                <tr>
+                    <td>Masa Berlaku</td>
+                    <td>{{ aset.durasi_angka }} {{ aset.durasi_satuan }}</td>
+                </tr>
+                <tr>
+                    <td>Tanggal Expired</td>
+                    <td>
+                        <span class="{{ 'text-red' if aset.status_sertifikasi == 'Expired' else 'text-green' }}">
+                            {{ aset.tgl_expired }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+                        <div id="tab-docs" class="tab-content">
+                            <div class="flex-between">
+                                <h3 class="tab-title">Sertifikat & Manual</h3>
+                                {% if session.get('role') == 'Admin' %}
+                                <button onclick="openUploadModal()" class="btn-small">
+                                    <i class="ph-bold ph-upload-simple"></i> Upload
+                                </button>
+                                {% endif %}
+                            </div>
+
+                            <div class="doc-list">
+                                {% for doc in aset.dokumen %}
+                                <div class="doc-item">
+                                    <div class="doc-icon">
+                                        <i class="ph-duotone ph-file-pdf"></i>
+                                    </div>
+                                    <div class="doc-info">
+                                        <h4>{{ doc.nama_dokumen }}</h4>
+                                        <span>Diupdate: {{ doc.tgl_upload }}</span>
+                                    </div>
+                                    <div class="doc-actions">
+                                        <a href="{{ doc.url }}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Lihat">
+                                            <i class="ph-bold ph-eye"></i>
+                                        </a>
+                                        {% if session.get('role') == 'Admin' %}
+                                        <form action="{{ url_for('alat.hapus_dokumen', id=doc.id) }}" method="POST" style="display:inline;"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn-icon delete" onclick="return confirm('Hapus dokumen ini?')">
+                                                <i class="ph-bold ph-trash"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="empty-state-small">
+                                    <i class="ph-duotone ph-files"></i>
+                                    <p>Belum ada dokumen terlampir.</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div id="tab-history" class="tab-content">
+                            <h3 class="tab-title">Jejak Inspeksi</h3>
+                            <div class="timeline">
+                                {% for log in aset.riwayat %}
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <span class="date">{{ log.tanggal }}</span>
+                                        <h4>{{ log.aktivitas }}</h4> <p>Oleh: {{ log.user }}</p>
+                                        {% if log.dokumen_lama %}
+                                        <a href="{{ log.dokumen_lama_url }}" target="_blank" rel="noopener noreferrer" class="riwayat-doc-link">
+                                            <i class="ph-bold ph-file-pdf"></i> {{ log.dokumen_lama }}
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <p class="text-grey">Belum ada riwayat aktivitas.</p>
+                                {% endfor %}
+                            </div>
+                        </div>

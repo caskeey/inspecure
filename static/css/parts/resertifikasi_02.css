@@ -1,0 +1,60 @@
+.urgensi-kuning { background: #FEF3C7; color: #B45309; }
+.urgensi-biru   { background: #DBEAFE; color: #2563EB; }
+
+/* =============================================
+   CARD ACTIONS
+   ============================================= */
+.rekap-card-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rekap-card-actions .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 17px;
+    background: #F8FAFC;
+    color: #64748B;
+    border: 1px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+}
+.rekap-card-actions .btn-action:hover {
+    transform: scale(1.07);
+    filter: brightness(0.95);
+}
+.rekap-card-actions .btn-action.edit {
+    background: #DBEAFE;
+    color: #2563EB;
+    border-color: #BFDBFE;
+}
+
+.rekap-card-actions .btn-kirim-satu:disabled {
+    opacity: 0.40;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    box-shadow: none;
+    transform: none;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 600px) {
+    .rekap-card-head { flex-direction: column; align-items: stretch; }
+    .rekap-card-actions { width: 100%; }
+    .rekap-card-actions .btn-primary-3d,
+    .rekap-card-actions button,
+    .rekap-card-actions a {
+        flex: 1;
+        justify-content: center;
+    }
+    .jadwal-info { flex-direction: column; align-items: flex-start; padding: 14px 14px; }
+}

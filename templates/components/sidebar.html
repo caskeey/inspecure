@@ -1,0 +1,196 @@
+<nav class="sidebar glass-sidebar" id="sidebar">
+    
+    <div class="sidebar-header" onclick="expandSidebar()">
+        <div class="brand">
+            <div class="logo-icon"><i class="ph-fill ph-shield-check"></i></div>
+            <span class="logo-text">INSPECURE</span>
+        </div>
+        
+        <button type="button" class="toggle-btn" aria-label="Tutup sidebar" onclick="event.stopPropagation(); toggleSidebar()">
+            <i class="ph-bold ph-caret-left"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-menu">
+        
+        <div class="menu-label">Utama</div>
+        
+        <a href="{{ url_for('main.dashboard') }}" class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+            <i class="ph-bold ph-squares-four"></i>
+            <span class="link-text">Overview</span>
+        </a>
+        
+        {% if session.get('role') == 'Admin' %}
+        <a href="{{ url_for('alat.tambah_alat') }}" class="menu-item {% if active_page == 'tambah' %}active{% endif %}">
+            <i class="ph-bold ph-plus-circle"></i>
+            <span class="link-text">Tambah Aset</span>
+        </a>
+        {% endif %}
+
+        <div class="menu-label">Data</div>
+
+        <a href="{{ url_for('alat.data_master') }}" class="menu-item {% if active_page == 'master' %}active{% endif %}">
+            <i class="ph-bold ph-cube"></i>
+            <span class="link-text">Data Aset</span>
+        </a>
+
+        {% if session.get('role') == 'Admin' %}
+        <a href="{{ url_for('alat.input_ocr') }}" class="menu-item {% if active_page == 'input_ocr' %}active{% endif %}">
+            <i class="ph-bold ph-file-search"></i>
+            <span class="link-text">Smart Input</span>
+        </a>
+        {% endif %}
+
+        <a href="{{ url_for('resertifikasi.resertifikasi_page') }}" class="menu-item {% if active_page == 'resertifikasi' %}active{% endif %}">
+            <i class="ph-bold ph-envelope-simple-open"></i>
+            <span class="link-text">Rekap Resertifikasi</span>
+        </a>
+
+        {% if session.get('role') == 'Admin' %}
+        <a href="{{ url_for('alat.daftar_resertifikasi') }}" class="menu-item {% if active_page == 'resertifikasi_alat' %}active{% endif %}">
+            <i class="ph-bold ph-certificate"></i>
+            <span class="link-text">Resertifikasi</span>
+        </a>
+        {% endif %}
+
+        <a href="{{ url_for('alat.aktivasi_rfid') }}" class="menu-item {% if active_page == 'aktivasi' %}active{% endif %}">
+            <i class="ph-bold ph-scan"></i>
+            <span class="link-text">Scan Portable</span>
+        </a>
+        
+        <div class="menu-label">Sistem</div>
+
+        <a href="{{ url_for('settings.index') }}" class="menu-item {% if active_page == 'settings' %}active{% endif %}">
+            <i class="ph-bold ph-gear"></i>
+            <span class="link-text">Pengaturan</span>
+        </a>
+
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('settings.index') }}" class="user-card">
+            <img src="https://ui-avatars.com/api/?name={{ session.get('user') }}&background=E3E2E0&color=2F2F2F&bold=true" class="avatar" alt="">
+            <div class="user-info">
+                <span class="u-name">{{ session.get('user') }}</span>
+                <span class="u-role">{{ session.get('role') }}</span>
+            </div>
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn" aria-label="Keluar" data-tip="Keluar">
+            <i class="ph-bold ph-sign-out"></i>
+        </a>
+    </div>
+</nav>
+
+<div id="scanResultModal" class="modal-backdrop" style="z-index: 9999;">
+    <div class="glass-card modal-box" style="max-width: 500px; text-align: left;">
+        
+        <div class="modal-top">
+            <h3 id="scanModalTitle" style="display:flex; align-items:center; gap:10px;">
+                <i class="ph-duotone ph-scan" style="color:var(--primary);"></i> 
+                Detail Aset
+            </h3>
+            <button onclick="closeScanModal()" class="close-btn"><i class="ph-bold ph-x"></i></button>
+        </div>
+
+        <div id="scanContent" style="padding-bottom: 20px;">
+            <div class="info-group">
+                <label style="font-size:11px; color:var(--text-grey); font-weight:700;">NAMA ALAT</label>
+                <div id="d-nama" style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:10px;">-</div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                <div>
+                    <label style="font-size:11px; color:var(--text-grey); font-weight:700;">SERIAL NUMBER</label>
+                    <div id="d-sn" style="font-size:14px; font-weight:600;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:11px; color:var(--text-grey); font-weight:700;">PERUSAHAAN</label>
+                    <div id="d-pt" style="font-size:14px; font-weight:600;">-</div>
+                </div>
+            </div>
+
+            <div style="background:#F8FAFC; padding:15px; border-radius:12px; border:1px solid #E2E8F0; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:12px; font-weight:600; color:var(--text-grey);">Status Sertifikasi</span>
+                    <span id="d-status" class="status-badge" style="font-size:11px;">-</span>
+                </div>
+                <div style="margin-top:8px; font-size:13px; font-weight:700; color:var(--text-main);">
+                    Exp: <span id="d-exp">-</span>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <a id="btn-detail" href="#" class="btn-primary-3d small" style="flex:1; justify-content:center; text-decoration:none; background:#0F172A; box-shadow:0 4px 0 #000;">
+                    <i class="ph-bold ph-eye"></i> Detail
+                </a>
+                <a id="btn-edit" href="#" class="btn-primary-3d small" style="flex:1; justify-content:center; text-decoration:none;">
+                    <i class="ph-bold ph-pencil-simple"></i> Edit
+                </a>
+                <form id="form-delete" action="#" method="POST" onsubmit="return confirm('Yakin hapus data ini?');" style="flex:1;">
+                    <button type="submit" class="btn-primary-3d small" style="width:100%; background:#EF4444; box-shadow:0 4px 0 #991B1B;">
+                        <i class="ph-bold ph-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="scanNotFoundContent" style="display:none; padding-bottom: 10px; text-align:center;">
+            <div style="width:64px; height:64px; margin:0 auto 15px; border-radius:50%; background:#FFF7ED; display:flex; align-items:center; justify-content:center;">
+                <i class="ph-duotone ph-tag" style="font-size:32px; color:#F97316;"></i>
+            </div>
+            <h4 style="margin-bottom:6px;">UID Belum Terdaftar</h4>
+            <p style="font-size:13px; color:var(--text-grey); margin-bottom:6px;">
+                Kartu/tag dengan UID berikut belum terhubung ke aset mana pun:
+            </p>
+            <div style="font-family:monospace; font-weight:700; font-size:15px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:10px; margin-bottom:20px; letter-spacing:1px;" id="nf-uid">-</div>
+            <a id="btn-daftar-baru" href="#" class="btn-primary-3d full-width" style="text-decoration:none; justify-content:center;">
+                <i class="ph-bold ph-plus-circle"></i> Registrasi Aset Baru dengan UID Ini
+            </a>
+        </div>
+
+        <div id="scanErrorContent" style="display:none; padding-bottom: 10px; text-align:center;">
+            <div style="width:56px; height:56px; margin:0 auto 12px; border-radius:50%; background:#FEE2E2; display:flex; align-items:center; justify-content:center;">
+                <i class="ph-duotone ph-warning" style="font-size:28px; color:#DC2626;"></i>
+            </div>
+            <h4 style="margin-bottom:6px;">Scan belum berhasil</h4>
+            <p id="scanErrorMessage" style="font-size:13px; color:var(--text-grey); margin-bottom:16px;">Periksa koneksi lalu coba lagi.</p>
+            <button type="button" class="btn-primary-3d small" onclick="retryLastNfcScan()">
+                <i class="ph-bold ph-arrow-clockwise"></i> Coba Lagi
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: SCAN PORTABLE RFID/NFC -->
+<!-- Reader portable (ESP32-S3, mode BLE HID keyboard-emulator) di-pairing
+     langsung dari Settings Bluetooth HP/laptop, BUKAN dari tombol di sini --
+     begitu paired, hasil scan otomatis kebaca lewat listener keyboard di
+     app_keyboard_reader.js. Modal ini sekarang cuma buat jalur alternatif "Scan
+     pakai NFC HP" (Web NFC / NDEFReader). -->
+<div id="btScanModal" class="modal-backdrop" style="z-index: 9999;">
+    <div class="glass-card modal-box" style="max-width: 460px; text-align: left;">
+
+        <div class="modal-top">
+            <h3 style="display:flex; align-items:center; gap:10px;">
+                <i class="ph-duotone ph-scan" style="color:var(--primary);"></i>
+                Scan Portable RFID/NFC
+            </h3>
+            <button onclick="closeBtModal()" class="close-btn"><i class="ph-bold ph-x"></i></button>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-grey); margin-bottom:18px;">
+            Pilih metode scan yang akan digunakan. Reader Bluetooth harus tersambung sebagai keyboard BLE HID.
+            Setelah itu tap tombol scan pada reader atau tempelkan tag. NFC bawaan HP menggunakan tombol terpisah.
+        </p>
+
+        <button type="button" class="btn-primary-3d full-width" id="modalReaderBtn" onclick="startReaderScan()" style="margin-bottom:8px;">
+            <i class="ph-bold ph-broadcast"></i> Scan dengan RFID/Bluetooth
+        </button>
+        <button type="button" class="btn-nfc-modal" id="modalNfcBtn" onclick="startModalNfcScan()">
+            <i class="ph-bold ph-wifi-high"></i> Scan pakai NFC HP
+        </button>
+        <div id="modalNfcStatus" class="nfc-modal-status"></div>
+    </div>
+</div>
+
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>

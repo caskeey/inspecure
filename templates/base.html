@@ -1,0 +1,122 @@
+{#
+  base.html — MAIN LAYOUT / APP SHELL untuk semua halaman setelah login.
+
+  Halaman anak cukup:
+      {% extends 'base.html' %}
+      {% set crumbs = [('Workspace', url_for('main.dashboard')), ('Settings', none)] %}   (breadcrumb dinamis)
+      {% set canvas = 'notion' %}   (notion = 900px default | wide = 1100px | full = 100%)
+      {% set cover  = true %}       (opsional: cover banner)
+      {% block title %}...{% endblock %}
+      {% block head_extra %}<link rel="stylesheet" href="...css halaman...">{% endblock %}
+      {% block head_after_base %}<link ... css khusus halaman yang dimuat setelah tema global...>{% endblock %}
+      {% block content %}...isi halaman...{% endblock %}
+      {% block after_shell %}...modal & <script> halaman...{% endblock %}
+
+  Urutan CSS: sidebar.css -> CSS halaman -> dashboard.css -> notion.css -> CSS khusus pasca-tema -> responsive.css.
+  head_after_base dipakai CSS halaman yang perlu mengatur komponen setelah tema global dimuat.
+#}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}INSPECURE{% endblock %}</title>
+
+    {% include 'components/head_styles.html' %}
+    {% block head_extra %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notion.css') }}">
+    {% block head_after_base %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    {% include 'components/head_scripts.html' %}
+    <script src="{{ url_for('static', filename='js/theme_init.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/layout_preferences.js') }}"></script>
+</head>
+<body>
+    {% set _crumbs = crumbs|default([('Workspace', none)]) %}
+
+    <div class="app-container">
+
+        {% include 'components/sidebar.html' %}
+
+        <main class="main-content has-topbar canvas-{{ canvas|default('notion') }}" id="mainCanvas">
+
+            <!-- ============ TOPBAR GLOBAL ============ -->
+            <div class="page-topbar">
+                <button type="button" class="topbar-toggle" id="topbarToggle" data-sidebar-toggle
+                        onclick="toggleSidebar()" aria-label="Buka atau tutup sidebar" aria-expanded="true"
+                        title="Buka / tutup sidebar (Ctrl + \)">
+                    <i class="ph-bold ph-sidebar-simple"></i>
+                </button>
+
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    {% for label, href in _crumbs %}
+                        {% if not loop.first %}<span class="sep">/</span>{% endif %}
+                        {% if loop.last %}<span class="crumb-current" aria-current="page">{{ label }}</span>
+                        {% elif href %}<a href="{{ href }}">{{ label }}</a>
+                        {% else %}<span class="crumb-item">{{ label }}</span>{% endif %}
+                    {% endfor %}
+                </nav>
+
+                <div class="topbar-spacer"></div>
+
+                <button type="button" class="topbar-search" id="cmdkOpen" aria-label="Cari (Ctrl + K)">
+                    <i class="ph-bold ph-magnifying-glass"></i>
+                    <span class="ts-text">Cari halaman…</span>
+                    <kbd>Ctrl K</kbd>
+                </button>
+
+                <button type="button" class="topbar-icon-btn" id="widthToggle" aria-pressed="false"
+                        title="Lebar halaman: normal / penuh">
+                    <i class="ph-bold ph-arrows-out-line-horizontal"></i>
+                </button>
+
+                <button type="button" class="topbar-theme-toggle" id="themeToggle" aria-label="Ganti tema" title="Ganti ke tema gelap">
+                    <i class="ph-bold ph-moon" id="themeIcon" aria-hidden="true"></i>
+                    <span id="themeLabel">Terang</span>
+                </button>
+
+                <a class="topbar-avatar" href="{{ url_for('settings.index') }}" title="{{ session.get('user') }} · {{ session.get('role') }}">
+                    <img src="https://ui-avatars.com/api/?name={{ session.get('user') }}&background=E3E2E0&color=2F2F2F&bold=true" alt="{{ session.get('user') }}">
+                </a>
+            </div>
+
+            {% if cover|default(false) %}
+            <div class="page-cover" id="pageCover" data-cover="0">
+                <button type="button" class="cover-change" id="coverChange">
+                    <i class="ph-bold ph-image"></i> Ganti Cover
+                </button>
+            </div>
+            {% endif %}
+
+            <!-- ============ CANVAS ============ -->
+            <div class="page-canvas{% if cover|default(false) %} has-cover{% endif %}">
+                {% include 'components/flash_messages.html' %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Command palette (Ctrl/Cmd + K) -->
+    <div class="cmdk-backdrop" id="cmdk" hidden>
+        <div class="cmdk-box" role="dialog" aria-modal="true" aria-label="Cari halaman">
+            <div class="cmdk-input-row">
+                <i class="ph-bold ph-magnifying-glass"></i>
+                <input type="text" id="cmdkInput" placeholder="Cari halaman atau aksi…" autocomplete="off">
+                <kbd>Esc</kbd>
+            </div>
+            <ul class="cmdk-list" id="cmdkList" role="listbox"></ul>
+            <div class="cmdk-foot"><span>↑ ↓ pilih</span><span>Enter buka</span><span>Esc tutup</span></div>
+        </div>
+    </div>
+
+    {% block after_shell %}{% endblock %}
+
+    <script src="{{ url_for('static', filename='js/shell_store.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shell_preferences.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shell_command_palette.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shell_database_views.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shell_sidebar_tips.js') }}"></script>
+</body>
+</html>

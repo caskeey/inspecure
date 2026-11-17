@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Resertifikasi', url_for('resertifikasi.resertifikasi_page')), ('Pratinjau Email Otomatis', none)] %}
+{% set canvas = 'wide' %}
+
+{% block title %}Pratinjau Email Otomatis - INSPECURE{% endblock %}
+
+{% block head_after_base %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resertifikasi_preview_email.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auto-mail-preview">
+    <div class="preview-heading">
+        <div>
+            <p class="preview-eyebrow"><i class="ph-bold ph-envelope-simple-open"></i> TINJAUAN SEBELUM JADWAL</p>
+            <h1>Pratinjau Email Otomatis</h1>
+            <p>Ini adalah isi email dan lampiran PDF untuk {{ nama_perusahaan }} yang akan dikirim oleh jadwal otomatis.</p>
+        </div>
+        <a class="btn-secondary" href="{{ url_for('resertifikasi.resertifikasi_page') }}">
+            <i class="ph-bold ph-arrow-left"></i> Kembali ke Rekap
+        </a>
+    </div>
+
+    <div class="preview-notice glass-panel">
+        <i class="ph-fill ph-info"></i>
+        <div><b>{{ jumlah_alat }} alat</b> masuk dalam lampiran saat ini. Data dapat berubah sebelum jadwal kirim; pratinjau ini mengikuti data yang belum pernah dikirim otomatis.</div>
+    </div>
+
+    <section class="mail-meta glass-panel" aria-label="Informasi email">
+        <h2>Detail Pengiriman</h2>
+        <dl>
+            <dt>Perusahaan</dt><dd>{{ nama_perusahaan }}</dd>
+            <dt>Subjek</dt><dd>{{ subject }}</dd>
+            <dt>Kepada</dt><dd>{{ penerima|join(', ') if penerima else 'Tidak ada alamat penerima yang valid' }}</dd>
+            {% if bcc %}<dt>BCC</dt><dd>{{ bcc|join(', ') }}</dd>{% endif %}
+            <dt>Lampiran</dt><dd><a href="{{ pdf_url }}" target="_blank" rel="noopener"><i class="ph-bold ph-file-pdf"></i> {{ pdf_filename }} ({{ jumlah_alat }} alat)</a></dd>
+            <dt>Jadwal</dt><dd>{{ jadwal_hari|default(28) }} pukul {{ '%02d'|format(jadwal_jam|default(10)) }}:{{ '%02d'|format(jadwal_menit|default(0)) }} WIB</dd>
+        </dl>
+    </section>
+
+    <section class="mail-body-card glass-panel">
+        <h2>Isi Email</h2>
+        <div class="mail-body-render">{{ email_html|safe }}</div>
+        <details class="plain-text-preview">
+            <summary>Lihat versi teks biasa</summary>
+            <pre>{{ email_text }}</pre>
+        </details>
+    </section>
+
+    <section class="attachment-card glass-panel">
+        <div class="attachment-heading">
+            <div><h2>Pratinjau Lampiran PDF</h2><p>PDF ini dibuat dengan data aset saat pratinjau dibuka.</p></div>
+            <a class="btn-secondary" href="{{ pdf_url }}" target="_blank" rel="noopener"><i class="ph-bold ph-arrow-square-out"></i> Buka PDF</a>
+        </div>
+        <iframe src="{{ pdf_url }}" title="Pratinjau PDF rekap otomatis untuk {{ nama_perusahaan }}"></iframe>
+    </section>
+</section>
+{% endblock %}

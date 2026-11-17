@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Aset', url_for('alat.data_master')), (aset.nama_alat, none)] %}
+{% set canvas = 'wide' %}
+{% set cover = true %}
+
+{% block title %}Detail Aset - {{ aset.nama_alat }}{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detail.css') }}">
+{% endblock %}
+
+{% block content %}
+            
+            {% call page_header('ph-wrench') %}
+    <h1 class="page-title">{{ aset.nama_alat }}</h1>
+    {% call props() %}
+        {% call prop('ph-seal-check', 'Status') %}
+            <span class="tag {{ 'green' if aset.status_sertifikasi == 'Aktif' else 'red' }}">{{ aset.status_sertifikasi }}</span>
+        {% endcall %}
+        {% call prop('ph-barcode', 'Nomor Seri') %}
+            <span class="mono">{{ aset.nomor_serial }}</span>
+        {% endcall %}
+    {% endcall %}
+    {% if session.get('role') == 'Admin' %}
+    <div class="page-actions">
+        <a href="{{ url_for('alat.edit_alat', id=aset.id) }}" class="btn-action edit" title="Edit Data">
+            <i class="ph-bold ph-pencil-simple"></i> <span>Edit</span>
+        </a>
+        <button onclick="confirmDelete('{{ aset.id }}')" class="btn-action delete" title="Hapus Aset">
+            <i class="ph-bold ph-trash"></i>
+        </button>
+    </div>
+    {% endif %}
+{% endcall %}
+
+            <div class="detail-grid">
+                
+                <div class="left-col">
+    <div class="glass-panel asset-card">
+        
+        <div class="general-icon-wrapper">
+            <i class="ph-duotone ph-cube"></i>
+        </div>
+        
+        <div class="card-info">
+            <div class="info-item centered">
+                <label>RFID UID</label>
+                <div class="value-chip big">
+                    <i class="ph-bold ph-scan"></i> {{ aset.rfid_uid }}
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="info-item">
+                <label>Lokasi / Perusahaan</label>
+                <p>{{ aset.nama_perusahaan }}</p>
+            </div>
+            
+            <div class="info-item">
+                <label>Contact Person</label>
+                <p>{{ aset.email_perusahaan or '-' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <div class="right-col">
+                    <div class="glass-panel content-panel">
+                        
+                        {% include 'components/detail_tabs.html' %}
+                    </div>
+                </div>
+
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <div id="uploadModal" class="modal-backdrop">
+        <div class="glass-card modal-box">
+            <div class="modal-top">
+                <h3>Upload Dokumen</h3>
+                <button onclick="closeUploadModal()" class="close-btn"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <form action="{{ url_for('alat.upload_dokumen', id=aset.id) }}" method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="input-group">
+                    <label>Nama Dokumen</label>
+                    <input type="text" name="nama_dokumen" placeholder="Contoh: Sertifikat Kalibrasi 2025" required>
+                </div>
+                <div class="input-group">
+                    <label>File (PDF/JPG)</label>
+                    <input type="file" name="file_dokumen" accept=".pdf,.jpg,.png" required>
+                </div>
+                <button type="submit" class="btn-primary-3d full-width">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/detail.js') }}"></script>
+{% endblock %}

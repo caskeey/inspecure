@@ -1,0 +1,4 @@
+/* Entry point: aturan dipisah menurut urutan aslinya di static/css/parts. */
+@import url("parts/input_ocr_01.css"); /* 185 baris */
+@import url("parts/input_ocr_02.css"); /* 180 baris */
+@import url("parts/input_ocr_03.css"); /* 77 baris */

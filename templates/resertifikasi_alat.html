@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Resertifikasi', url_for('alat.daftar_resertifikasi')), ('Proses', none)] %}
+{% set canvas = 'notion' %}
+
+{% block title %}Resertifikasi - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_alat.css') }}">
+{% endblock %}
+
+{% block content %}
+            {% call page_header('📜') %}
+    <h1 class="page-title">Resertifikasi Alat</h1>
+    <p class="page-desc">Perpanjang masa berlaku sertifikasi. Data sertifikasi lama otomatis diarsipkan ke riwayat.</p>
+    <div class="page-actions">
+        <div class="status-indicator warning">
+                        <span class="dot"></span>
+                        <span class="status-text">RESERTIFIKASI</span>
+                    </div>
+    </div>
+{% endcall %}
+
+            <div class="form-container">
+                <form method="POST" action="{{ url_for('alat.resertifikasi_alat', id=alat.id) }}" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="glass-panel highlight-section">
+                        <div class="section-icon"><i class="ph-duotone ph-lock-key"></i></div>
+                        <div class="section-body">
+                            <label class="form-label">Alat</label>
+                            <input type="text" class="glass-input locked-input" value="{{ alat.nama_alat }} ({{ alat.nomor_serial }})" readonly>
+                            <div class="hint-box">
+                                <i class="ph-fill ph-info"></i>
+                                <small>UID Tag: {{ alat.rfid_uid }}. Identitas alat tidak diubah di sini &mdash; gunakan menu Edit kalau mau ubah nama/serial/perusahaan.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title"><i class="ph-duotone ph-clock-counter-clockwise"></i> Sertifikasi Saat Ini</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Tgl Sertifikasi Lama</label>
+                                <input type="text" class="glass-input locked-input old-value-box" value="{{ alat.tgl_sertifikasi }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tgl Expired Lama</label>
+                                <input type="text" class="glass-input locked-input old-value-box" value="{{ alat.tgl_expired }}" readonly>
+                            </div>
+                        </div>
+                        <div class="hint-box">
+                            <i class="ph-fill ph-archive"></i>
+                            <small>Data di atas akan otomatis dipindah ke tab "Riwayat" begitu form ini disimpan.</small>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel form-section soft-yellow">
+                        <h3 class="section-title"><i class="ph-duotone ph-certificate"></i> Sertifikasi Baru</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Sertifikasi Baru</label>
+                                <input type="date" name="tgl_sertifikasi" id="tglSertif" class="glass-input" min="1900-01-01" max="2100-12-31" onchange="hitungExpired()" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Durasi Berlaku</label>
+                                <div class="input-merged">
+                                    <input type="number" name="durasi_angka" id="durasiAngka" class="glass-input" value="{{ alat.durasi_angka }}" oninput="hitungExpired()" required>
+                                    <select name="durasi_satuan" id="durasiSatuan" class="form-select-append" onchange="hitungExpired()">
+                                        <option value="Tahun" {% if alat.durasi_satuan == 'Tahun' %}selected{% endif %}>Tahun</option>
+                                        <option value="Bulan" {% if alat.durasi_satuan == 'Bulan' %}selected{% endif %}>Bulan</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label class="form-label">Estimasi Expired Baru</label>
+                            <div class="expired-display">
+                                <i class="ph-fill ph-calendar-check"></i>
+                                <input type="text" id="viewExpired" class="readonly-input-clean" placeholder="Otomatis dihitung..." readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel form-section">
+                        <h3 class="section-title"><i class="ph-duotone ph-file-text"></i> Dokumen Sertifikat Baru</h3>
+
+                        {% if alat.dokumen_path %}
+                        <div class="current-file-box">
+                            <div class="file-icon"><i class="ph-duotone ph-file-pdf"></i></div>
+                            <div class="file-info">
+                                <span class="lbl">File Sertifikat Lama:</span>
+                                <a href="{{ alat.dokumen_url }}" target="_blank" rel="noopener noreferrer" class="file-link">
+                                    {{ alat.dokumen_path }} <i class="ph-bold ph-arrow-square-out"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="upload-zone-simple">
+                            <label class="form-label">Upload Sertifikat Baru (Opsional)</label>
+                            <input type="file" name="dokumen_pendukung" class="glass-input" accept=".pdf,.jpg,.png,.doc,.docx,.xls,.xlsx">
+                            <small class="hint-text">Biarkan kosong kalau mau tetap pakai dokumen yang lama.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <a href="{{ url_for('alat.data_master') }}" class="btn-ghost">Batal</a>
+                        <button type="submit" class="btn-primary-3d full-width">SIMPAN RESERTIFIKASI</button>
+                    </div>
+
+                </form>
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script src="{{ url_for('static', filename='js/resertifikasi_alat.js') }}"></script>
+{% endblock %}

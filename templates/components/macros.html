@@ -1,0 +1,67 @@
+{#
+  components/macros.html — komponen Notion yang bisa dipakai ulang di semua halaman.
+
+  Cara pakai di halaman mana pun:
+    {% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+  page_header(icon)  -> ikon Phosphor (mis. 'ph-gear-six') dalam tile + isi header (H1, deskripsi, properti, aksi) lewat {% call %}
+  props() / prop()   -> daftar properti key-value di bawah judul
+  callout(icon)      -> kotak callout (ikon Phosphor di kiri, mis. 'ph-info')
+  section()          -> "Notion block": judul kecil bold + deskripsi abu-abu + divider
+  toggle()           -> toggle list / accordion (<details>)
+  db_view()          -> pembungkus tabel: pilihan tampilan Table / List / Gallery + pencarian
+  tag()              -> pill pastel (gray | blue | green | yellow | red)
+#}
+
+{% macro page_header(icon='') -%}
+<header class="page-header">
+    {% if icon %}<div class="page-icon" aria-hidden="true"><i class="ph-bold {{ icon }}"></i></div>{% endif %}
+    {% if caller is defined %}{{ caller() }}{% endif %}
+</header>
+{%- endmacro %}
+
+{% macro props() -%}
+<div class="page-props">{{ caller() }}</div>
+{%- endmacro %}
+
+{% macro prop(icon, key) -%}
+<div class="prop-row">
+    <div class="prop-key"><i class="ph-bold {{ icon }}"></i> {{ key }}</div>
+    <div class="prop-val">{{ caller() }}</div>
+</div>
+{%- endmacro %}
+
+{% macro callout(icon='ph-info', kind='') -%}
+<div class="callout {{ kind }}" role="note">
+    <span class="callout-icon"><i class="ph-bold {{ icon }}"></i></span>
+    <div class="callout-body">{{ caller() }}</div>
+</div>
+{%- endmacro %}
+
+{% macro section(title, desc='') -%}
+<section class="nblock">
+    <div class="nblock-head">
+        <h2 class="nblock-title">{{ title }}</h2>
+        {% if desc %}<p class="nblock-desc">{{ desc }}</p>{% endif %}
+    </div>
+    <div class="nblock-body">{{ caller() }}</div>
+</section>
+{%- endmacro %}
+
+{% macro toggle(title, open=False, hint='') -%}
+<details class="toggle-block" {% if open %}open{% endif %}>
+    <summary>{{ title }}{% if hint %} <span class="toggle-hint">{{ hint }}</span>{% endif %}</summary>
+    <div class="toggle-body">{{ caller() }}</div>
+</details>
+{%- endmacro %}
+
+{# views: daftar tampilan yang tersedia. search=False kalau tabel sudah punya pencarian sendiri (mis. DataTables). #}
+{% macro db_view(views='table,list,gallery', default='table', search=True, key='') -%}
+<div class="db-view" data-view="{{ default }}" data-views="{{ views }}" data-search="{{ 1 if search else 0 }}" data-key="{{ key }}">
+    {{ caller() }}
+</div>
+{%- endmacro %}
+
+{% macro tag(text, color='gray') -%}
+<span class="tag {{ color }}">{{ text }}</span>
+{%- endmacro %}

@@ -1,0 +1,29 @@
+# Rahasia -- JANGAN pernah di-commit
+.env
+backend/.env
+backend/.secret_key
+.secret_key
+db.sql
+
+# Data docker
+db_data/
+uploads/
+rekap/
+
+# Virtual environment & cache
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# File hasil upload / generate
+static/uploads/
+static/rekap_resertifikasi/
+static/backups/
+*.sql.gz
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+*.zip

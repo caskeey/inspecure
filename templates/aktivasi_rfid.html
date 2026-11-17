@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Scan Portable', none)] %}
+{% set canvas = 'wide' %}
+
+{% block title %}Scan Portable RFID/NFC - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aktivasi_rfid.css') }}">
+{% endblock %}
+
+{% block content %}
+            {% call page_header('ph-broadcast') %}
+    <h1 class="page-title">Scan Portable RFID/NFC</h1>
+    <p class="page-desc">Sambungkan <span class="text-gradient">reader RFID/NFC portable</span> lewat Bluetooth, tempelkan kartu, detail asetnya langsung muncul.</p>
+    <div class="page-actions">
+        <div class="date-badge" id="currentDateDisplay">{{ items|length }} Alat Terdaftar</div>
+    </div>
+{% endcall %}
+
+            <div class="glass-panel scan-hero">
+                <div class="scan-hero-text">
+                    <h2>Scan Portable RFID/NFC</h2>
+                    <p>Reader RFID/NFC portable disambungkan lewat Bluetooth di pengaturan HP/laptop kamu (satu kali saja) &mdash; setiap kartu yang di-scan otomatis menampilkan pop-up detail asetnya di sini. Nggak punya reader di tangan? Pakai NFC bawaan HP kamu.</p>
+                    <button type="button" class="btn-primary-3d scan-hero-btn" onclick="openBtModal()">
+                        <i class="ph-bold ph-scan"></i>
+                        <span>Scan Di Sini</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel main-panel">
+                <div class="panel-header">
+                    <div class="header-title">
+                        <h3><i class="ph-duotone ph-identification-card"></i> Daftar UID Terdaftar</h3>
+                        <p>Referensi UID yang sudah terhubung ke masing-masing aset.</p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="text" id="searchAlat" class="search-input" placeholder="Cari nama alat / UID...">
+                        <span class="count-pill">{{ items|length }} Item</span>
+                    </div>
+                </div>
+
+                <div class="table-responsive db-view" data-view="table" data-views="table,list,gallery" data-search="1" data-key="scan">
+                    <table class="clean-table" id="alatTable">
+                        <thead>
+                            <tr>
+                                <th>Nama Alat</th>
+                                <th>RFID UID</th>
+                                <th>Perusahaan</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <div class="td-title">{{ item.nama_alat }}</div>
+                                    <div class="td-sub"><i class="ph-bold ph-barcode"></i> {{ item.nomor_serial or '-' }}</div>
+                                </td>
+                                <td>
+                                    {% if item.rfid_uid and not item.rfid_uid.startswith('PENDING-') %}
+                                        <span class="uid-pill"><i class="ph-bold ph-identification-card"></i> {{ item.rfid_uid }}</span>
+                                    {% else %}
+                                        <span class="uid-pill empty"><i class="ph-bold ph-minus-circle"></i> Belum ada UID</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.nama_perusahaan or '-' }}</td>
+                                <td>
+                                    {% if item.status_sertifikasi == 'Aktif' %}
+                                        <span class="status-badge green">Aktif</span>
+                                    {% elif item.status_sertifikasi == 'Expired' %}
+                                        <span class="status-badge red">Expired</span>
+                                    {% else %}
+                                        <span class="status-badge orange">{{ item.status_sertifikasi or 'Belum Aktivasi' }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="empty-state">
+                                    <div class="empty-icon"><i class="ph-duotone ph-cube"></i></div>
+                                    <p>Belum ada data alat sama sekali. Tambah aset dulu lewat menu "Tambah Aset".</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script src="{{ url_for('static', filename='js/aktivasi_rfid.js') }}"></script>
+{% endblock %}

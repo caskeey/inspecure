@@ -1,0 +1,24 @@
+.glass-input { font-size: 17px !important; padding: 16px 16px !important; }
+.form-select-append { font-size: 16px !important; }
+.hint-box, .hint-box small { font-size: 15px !important; }
+.hint-text { font-size: 15px !important; }
+.file-link { font-size: 17px !important; }
+.file-info .lbl { font-size: 14px !important; }
+.readonly-input-clean { font-size: 18px !important; }
+.locked-input { font-size: 17px !important; }
+
+/* Kotak data sertifikasi LAMA di halaman Resertifikasi -- dibikin lebih
+   besar & mencolok biar Admin gak salah baca data lama vs data baru */
+.old-value-box {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    padding: 16px 16px !important;
+    background: rgba(226, 232, 240, 0.7) !important;
+    border: 2px dashed rgba(100, 116, 139, 0.4) !important;
+    color: #334155 !important;
+    letter-spacing: 0.3px;
+}
+
+/* Animasi putar ikon loading (#loadingBox di halaman Resertifikasi > Cari Alat).
+ * Dulu <style> inline di daftar_resertifikasi.html. */
+@keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }

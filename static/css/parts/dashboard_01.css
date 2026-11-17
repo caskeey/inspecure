@@ -1,0 +1,184 @@
+/* static/css/dashboard.css — Notion-like design system */
+
+/* =============================================
+   1. TOKENS (alias lama dipertahankan)
+   ============================================= */
+:root {
+    --notion-bg:        #FFFFFF;
+    --notion-sidebar:   #F7F6F3;
+    --notion-text:      #2F2F2F;
+    --notion-muted:     #787774;
+    --notion-border:    rgba(55, 53, 47, 0.09);
+    --notion-hover:     rgba(55, 53, 47, 0.06);
+    --notion-active:    rgba(55, 53, 47, 0.08);
+    --notion-callout:   #F1F1EF;
+
+    --tag-blue-bg:   #D3E5EF;  --tag-blue-fg:   #183347;
+    --tag-yellow-bg: #FDECC8;  --tag-yellow-fg: #402C1B;
+    --tag-green-bg:  #DBEDDB;  --tag-green-fg:  #1C3829;
+    --tag-red-bg:    #FFE2DD;  --tag-red-fg:    #5D1715;
+    --tag-gray-bg:   #E3E2E0;  --tag-gray-fg:   #32302C;
+
+    --primary:        #2F2F2F;
+    --primary-dark:   #2A2825;
+    --primary-light:  #F7F6F3;
+    --accent:         #2F2F2F;
+    --accent-hover:   #2A2825;
+    --accent-light:   rgba(55, 53, 47, 0.08);
+    --accent-ink:     #FFFFFF;
+
+    --success:        #1C3829;
+    --success-light:  #DBEDDB;
+    --warning:        #402C1B;
+    --warning-light:  #FDECC8;
+    --danger:         #5D1715;
+    --danger-light:   #FFE2DD;
+
+    --text-main:      #2F2F2F;
+    --text-secondary: #504E49;
+    --text-grey:      #787774;
+    --text-muted:     #787774;
+    --text-disabled:  #A6A4A0;
+
+    --card-bg:        #FFFFFF;
+    --bg-body:        #FFFFFF;
+    --surface:        #FFFFFF;
+    --surface-alt:    #F7F6F3;
+    --border:         #E9E9E8;
+    --card-border:    #E9E9E8;
+    --border-strong:  #D8D7D4;
+
+    --shadow-sm:   none;
+    --shadow-md:   none;
+    --shadow-lg:   0 8px 24px rgba(15, 15, 15, 0.12);
+    --card-shadow: none;
+
+    --radius: 6px;
+    --r-sm: 3px;
+    --r-md: 4px;
+    --r-lg: 6px;
+    --r-xl: 8px;
+
+    --canvas-w: 1100px;
+
+    --font-head: 'Inter', ui-sans-serif, -apple-system, 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Inter', ui-sans-serif, -apple-system, 'Segoe UI', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+*:focus-visible { box-shadow: 0 0 0 2px rgba(35, 131, 226, 0.45); }
+
+body, html { width: 100%; height: 100%; overflow: hidden; }
+
+body {
+    background: var(--notion-bg);
+    color: var(--notion-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.gradient-blob { display: none; }
+
+/* =============================================
+   2. LAYOUT — canvas terpusat
+   ============================================= */
+.app-container { display: flex; width: 100%; height: 100vh; }
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+    background: var(--notion-bg);
+    /* konten terpusat dengan lebar maksimum */
+    padding: 56px max(32px, calc((100% - var(--canvas-w)) / 2)) 96px;
+}
+.main-content.canvas-notion { --canvas-w: 900px; }
+.main-content.canvas-full   { --canvas-w: 100%; }
+
+.main-content::-webkit-scrollbar { width: 10px; }
+.main-content::-webkit-scrollbar-thumb { background: rgba(55,53,47,0.16); border-radius: 10px; border: 3px solid transparent; background-clip: content-box; }
+.main-content::-webkit-scrollbar-track { background: transparent; }
+
+/* =============================================
+   3. CONTAINER — border tipis tanpa shadow
+   ============================================= */
+.glass-panel {
+    background: var(--notion-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+/* =============================================
+   4. HEADER HALAMAN: ikon, judul, properti
+   ============================================= */
+.top-bar {
+    display: block;
+    padding: 0;
+    margin-bottom: 32px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.page-icon { line-height: 1; }
+
+.header-text h1 {
+    font-family: var(--font-head);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--notion-text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+.header-text p { color: var(--notion-muted); font-size: 15px; margin-top: 6px; }
+
+.btn-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 14px; color: var(--notion-muted); text-decoration: none;
+    padding: 2px 6px; margin: 0 0 10px -6px; border-radius: 4px;
+}
+.btn-back:hover { background: var(--notion-hover); }
+
+.text-gradient { background: none; color: inherit; padding: 0; font-weight: inherit; -webkit-text-fill-color: initial; }
+
+/* Properti key-value */
+.page-props { margin-top: 18px; display: flex; flex-direction: column; gap: 2px; }
+.prop-row { display: flex; align-items: center; min-height: 32px; font-size: 14px; }
+.prop-key {
+    width: 140px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--notion-muted);
+}
+.prop-key i { font-size: 16px; }
+.prop-val { color: var(--notion-text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.header-tools {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin-top: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--notion-border);
+}
+.header-tools .user-profile { display: none; }
+
+.date-badge { background: none; color: var(--notion-text); padding: 0; border: none; font-size: 14px; font-weight: 400; }
+
+/* BT pill */
+
+.user-profile img { width: 28px; height: 28px; border-radius: 4px; }
+
+/* =============================================
+   5. KARTU STAT → CALLOUT BOX
+   ============================================= */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+}

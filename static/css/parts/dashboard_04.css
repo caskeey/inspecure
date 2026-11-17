@@ -1,0 +1,100 @@
+@media (hover: none) { .cover-change { opacity: 1; } }
+
+/* Canvas terpusat di bawah cover */
+.page-canvas {
+    width: 100%;
+    max-width: var(--canvas-w);
+    margin: 0 auto;
+    padding: 0 32px 96px;
+}
+.page-canvas .page-icon { position: relative; z-index: 3; }
+
+/* =====================================================================
+   15. CALLOUT, TOGGLE BLOCK, TAG, HOVER
+   ===================================================================== */
+.callout {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    margin: 20px 0 14px;
+    background: var(--notion-callout);
+    border: 1px solid var(--notion-border);
+    border-radius: 4px;
+    font-size: 14.5px;
+    line-height: 1.65;
+}
+.callout-icon { font-size: 20px; line-height: 1.5; flex-shrink: 0; }
+.callout-body b { font-weight: 600; }
+.callout-body a { color: inherit; text-decoration: underline; text-decoration-color: rgba(55,53,47,0.3); }
+.callout-body a:hover { text-decoration-color: currentColor; }
+.callout.callout-red    { background: #FDEBEC; border-color: rgba(93,23,21,0.12); }
+.callout.callout-green  { background: #EDF3EC; border-color: rgba(28,56,41,0.12); }
+.callout.callout-yellow { background: #FBF3DB; border-color: rgba(64,44,27,0.12); }
+
+.toggle-block { margin: 0 0 28px; }
+.toggle-block > summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    margin-left: -6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--notion-text);
+    user-select: none;
+    transition: background 0.1s ease;
+}
+.toggle-block > summary::-webkit-details-marker { display: none; }
+.toggle-block > summary::before {
+    content: '';
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 4.5px 0 4.5px 7px;
+    border-color: transparent transparent transparent var(--notion-muted);
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+    margin: 0 4px;
+}
+.toggle-block[open] > summary::before { transform: rotate(90deg); }
+.toggle-block > summary:hover { background: var(--notion-hover); }
+.toggle-block > summary .toggle-hint { font-size: 13px; font-weight: 400; color: var(--notion-muted); }
+.toggle-block[open] > :not(summary) { animation: toggleIn 0.18s ease; margin-top: 10px; }
+@keyframes toggleIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.toggle-body { padding-left: 26px; color: var(--text-secondary); font-size: 14.5px; }
+.toggle-body ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.toggle-body li { display: flex; align-items: center; gap: 10px; }
+
+/* Tag pastel */
+.tag {
+    display: inline-block;
+    padding: 1px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--tag-gray-bg);
+    color: var(--tag-gray-fg);
+    white-space: nowrap;
+}
+.tag.blue   { background: var(--tag-blue-bg);   color: var(--tag-blue-fg); }
+.tag.green  { background: var(--tag-green-bg);  color: var(--tag-green-fg); }
+.tag.yellow { background: var(--tag-yellow-bg); color: var(--tag-yellow-fg); }
+.tag.red    { background: var(--tag-red-bg);    color: var(--tag-red-fg); }
+
+/* Kartu stat = tautan, hover halus */
+a.stat-card { text-decoration: none; color: inherit; cursor: pointer; transition: background-color 0.12s ease, transform 0.1s ease; }
+a.stat-card:hover { background-image: linear-gradient(var(--notion-hover), var(--notion-hover)); }
+a.stat-card:active { transform: scale(0.99); }
+.evt-item, .day, .btn-link, .btn-icon { cursor: pointer; }
+.clean-table tbody tr { transition: background 0.1s ease; }
+
+/* Kalau topbar dipakai, canvas mobile */
+@media (max-width: 768px) {
+    .page-cover { height: 140px; }
+    .page-canvas { padding: 0 16px 80px; }
+    .callout { padding: 12px; }
+    .breadcrumb a:not(:last-of-type) { max-width: 90px; }
+}

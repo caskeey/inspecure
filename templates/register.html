@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - INSPECURE</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/inter/inter.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/bold.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/fill.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="{{ url_for('static', filename='js/theme_init.js') }}"></script>
+</head>
+<body>
+
+    <div class="auth-top">
+        <a href="/" class="logo">
+            <span class="logo-mark"><i class="ph-fill ph-shield-check"></i></span>
+            <span>INSPECURE</span>
+        </a>
+        <div class="right">
+            <button type="button" class="icon-btn" id="themeToggle" aria-label="Ganti tema" title="Ganti tema">
+                <i class="ph-bold ph-moon" id="themeIcon"></i>
+            </button>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-text"><i class="ph-bold ph-arrow-left"></i> Kembali</a>
+        </div>
+    </div>
+
+    <main class="auth-main">
+        <div class="auth-card">
+
+            <div class="auth-head">
+                <div class="logo-mark"><i class="ph-fill ph-shield-check"></i></div>
+                <h1>Buat Akun</h1>
+                <p>Isi data di bawah untuk mendaftar.</p>
+            </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="flash-wrapper">
+                    {% for category, message in messages %}
+                      <div class="alert {{ category }}">
+                        <i class="ph-fill {{ 'ph-check-circle' if category == 'success' else 'ph-warning-circle' }}"></i> {{ message }}
+                      </div>
+                    {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+            <form action="{{ url_for('auth.register') }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="input-group">
+                    <label for="nama_lengkap">Nama Lengkap</label>
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama lengkap" value="{{ form.get('nama_lengkap', '') }}" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email_user">Email</label>
+                    <input type="email" id="email_user" name="email_user" placeholder="nama@perusahaan.com" value="{{ form.get('email_user', '') }}" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Pilih username" value="{{ form.get('username', '') }}" required autocomplete="off" minlength="4" maxlength="30">
+                </div>
+
+                <div class="input-group">
+                    <label for="passwordInput">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="passwordInput" placeholder="Minimal 8 karakter" required minlength="8">
+                        <button type="button" class="toggle-pass" aria-label="Lihat password">
+                            <i class="ph-bold ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="konfirmasi">Konfirmasi Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="konfirmasi_password" id="konfirmasi" placeholder="Ulangi password" required minlength="8">
+                        <button type="button" class="toggle-pass" aria-label="Lihat password">
+                            <i class="ph-bold ph-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-login" style="margin-top:6px">
+                    <span class="spin"></span> Buat Akun <i class="ph-bold ph-arrow-right"></i>
+                </button>
+
+            </form>
+
+            <div class="card-footer">
+                <p>Sudah punya akun? <a href="{{ url_for('auth.login') }}">Masuk</a></p>
+            </div>
+            <p class="auth-legal">Akses terbatas untuk personel yang berwenang.</p>
+
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

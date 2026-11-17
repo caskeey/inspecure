@@ -1,0 +1,182 @@
+/* static/css/tambah_alat.css — Corporate Enterprise Design System */
+
+:root {
+    --primary:       #1E3A5F;
+    --primary-light: #EFF6FF;
+    --accent:        #2563EB;
+    --accent-light:  #DBEAFE;
+    --text-main:     #0F172A;
+    --text-grey:     #64748B;
+    --text-muted:    #64748B;
+    --surface:       #FFFFFF;
+    --surface-alt:   #F8FAFC;
+    --border:        #E2E8F0;
+    --border-strong: #CBD5E1;
+    --success:       #16A34A;
+    --success-light: #DCFCE7;
+    --glass-bg:      #FFFFFF;
+    --glass-border:  #E2E8F0;
+    --radius:        14px;
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  14px;
+    --font-head: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* =============================================
+   LAYOUT
+   ============================================= */
+.form-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+.form-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.form-grid-layout .full-span { grid-column: 1 / -1; }
+
+@media (max-width: 1024px) {
+    .form-grid-layout { grid-template-columns: 1fr; }
+}
+
+/* =============================================
+   FORM SECTION CARD
+   ============================================= */
+.form-section {
+    padding: 24px 28px;
+    margin-bottom: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.section-title {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.01em;
+}
+.section-title i { color: var(--primary); font-size: 18px; }
+
+/* =============================================
+   HIGHLIGHT SECTION (RFID)
+   ============================================= */
+.highlight-section {
+    background: var(--primary);
+    color: #FFFFFF;
+    border: none;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+}
+.highlight-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+}
+
+.section-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+}
+.section-body { flex: 1; }
+
+/* Section title inside highlight (white) */
+.highlight-section .section-title { color: #FFFFFF; margin-bottom: 12px; }
+.highlight-section .section-title i { color: rgba(255,255,255,0.8); }
+
+.uid-input {
+    font-family: 'Courier New', monospace !important;
+    font-size: 22px !important;
+    letter-spacing: 2px;
+    border: 2px solid var(--accent) !important;
+    background: white !important;
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    text-align: center;
+    height: 58px;
+}
+.uid-input:focus {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15) !important;
+}
+
+.hint-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+    color: rgba(255,255,255,0.7);
+    font-size: 13.5px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.10);
+    padding: 7px 12px;
+    border-radius: var(--r-sm);
+}
+.hint-box i { color: rgba(255,255,255,0.9); }
+
+/* =============================================
+   SOFT BLUE SECTION (Sertifikasi)
+   ============================================= */
+.soft-blue {
+    background: var(--accent-light);
+    border-color: #BFDBFE;
+}
+
+/* =============================================
+   FORM ELEMENTS
+   ============================================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.form-grid.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 900px) {
+    .form-grid.form-grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+.form-group { margin-bottom: 16px; position: relative; }
+.mt-3 { margin-top: 16px; }
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+

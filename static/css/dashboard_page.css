@@ -1,0 +1,86 @@
+/* static/css/dashboard_page.css — gaya KHUSUS halaman Dashboard (kartu stat, kalender, dst).
+ * Dimuat hanya oleh templates/dashboard.html, TEPAT setelah dashboard.css dan sebelum notion.css
+ * (urutan ini sama dengan sebelum dipisah, jadi hasil cascade tidak berubah).
+ * Aturan umum yang dipakai banyak halaman tetap di dashboard.css. */
+
+.bt-status-pill { padding: 4px 10px !important; font-size: 13.5px !important; border-radius: 4px !important; min-height: 30px !important; }
+.bt-status-pill[data-state="connected"]  { background: var(--tag-green-bg)  !important; color: var(--tag-green-fg)  !important; }
+.bt-status-pill[data-state="connecting"] { background: var(--tag-yellow-bg) !important; color: var(--tag-yellow-fg) !important; }
+.bt-status-pill[data-state="error"]      { background: var(--tag-red-bg)    !important; color: var(--tag-red-fg)    !important; }
+@media (max-width: 768px) {
+    .bt-status-pill .bt-status-pill-text { display: none; }
+}
+.content-row { display: grid; grid-template-columns: 1fr; gap: 36px; }
+.side-panel-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+.btn-link {
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--notion-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+.btn-link:hover { background: var(--notion-hover); color: var(--notion-text); }
+.calendar-card, .agenda-card { padding: 16px; display: flex; flex-direction: column; background: var(--notion-bg); }
+.agenda-card { min-width: 0; }
+.agenda-card .panel-header { margin-bottom: 10px; }
+
+.cal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-weight: 600; font-size: 15px; color: var(--notion-text);
+}
+.cal-nav { display: flex; gap: 2px; }
+.cal-nav button {
+    background: transparent; border: none; width: 26px; height: 26px; border-radius: 4px;
+    cursor: pointer; font-size: 13px; color: var(--notion-muted);
+}
+.cal-nav button:hover { background: var(--notion-hover); color: var(--notion-text); }
+
+.weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+    font-size: 12px; color: var(--notion-muted); margin-bottom: 6px;
+}
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.day-placeholder { height: 30px; }
+.calendar-card .days-grid .day { width: 30px; height: 30px; justify-self: center; border-radius: 50%; }
+.calendar-card .days-grid .day.selected:not(.today) { background: var(--active-bg); color: var(--notion-text); }
+.day.has-event { font-weight: 600; position: relative; }
+.day.has-event::after {
+    content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px;
+    background: #2383E2; border-radius: 50%;
+}
+.day.today.has-event::after { background: #fff; }
+
+.event-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; min-height: 72px; max-height: 260px; overflow-y: auto; }
+.calendar-empty { display: grid; justify-items: center; gap: 6px; padding: 26px 12px; color: var(--notion-muted); text-align: center; font-size: 13px; }
+.calendar-empty i { font-size: 24px; }
+.calendar-empty p { margin: 0; }
+
+.evt-item {
+    display: flex; gap: 10px; align-items: center; min-width: 0; padding: 8px;
+    background: transparent; border: 1px solid transparent; border-radius: 6px;
+}
+.evt-item:hover { background: var(--notion-hover); border-color: var(--notion-border); }
+
+.evt-date {
+    text-align: center; background: var(--notion-callout);
+    padding: 3px 6px; border-radius: 4px; min-width: 42px; border: 1px solid var(--notion-border);
+}
+.evt-date b { display: block; font-size: 15px; color: var(--notion-text); font-weight: 600; line-height: 1.2; }
+.evt-date span { font-size: 10.5px; color: var(--notion-muted); text-transform: uppercase; }
+
+.evt-text { min-width: 0; }
+.evt-text h4 { font-size: 14px; font-weight: 500; margin: 0; color: var(--notion-text); overflow-wrap: anywhere; }
+.evt-text p  { font-size: 12.5px; color: var(--notion-muted); margin: 1px 0 0; }
+@media (max-width: 768px) {
+    .side-panel-wrapper { grid-template-columns: 1fr; }
+    #monitoring .clean-table th:nth-child(3), #monitoring .clean-table td:nth-child(3),
+    #monitoring .clean-table th:nth-child(5), #monitoring .clean-table td:nth-child(5) { display: none; }
+}
+
+.calendar-card, .agenda-card { transition: background-color 0.12s ease; }
+.calendar-card:hover, .agenda-card:hover { background-color: #FCFCFB; }

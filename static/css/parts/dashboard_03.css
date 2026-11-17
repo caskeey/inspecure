@@ -1,0 +1,185 @@
+/* =============================================
+   11. MODAL
+   ============================================= */
+.modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15, 15, 15, 0.6);
+    display: none; justify-content: center; align-items: center; z-index: 999;
+}
+.modal-backdrop.active { display: flex; animation: fadeUp 0.18s ease; }
+
+.modal-box {
+    background: var(--notion-bg);
+    width: 420px; max-width: 92vw;
+    padding: 20px 22px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(15,15,15,0.05), 0 8px 24px rgba(15,15,15,0.2);
+    border: none;
+}
+
+.modal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.modal-top h3 { font-size: 18px; font-weight: 600; color: var(--notion-text); }
+
+.close-btn {
+    background: transparent; border: none; font-size: 16px; cursor: pointer;
+    color: var(--notion-muted); width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center; border-radius: 4px;
+}
+.close-btn:hover { background: var(--notion-hover); color: var(--notion-text); transform: none; }
+
+.input-group { margin-bottom: 14px; }
+.input-group label { display: block; font-size: 12.5px; font-weight: 500; margin-bottom: 4px; color: var(--notion-muted); }
+.input-group input {
+    width: 100%; padding: 6px 10px; border: 1px solid var(--border-strong);
+    border-radius: 4px; font-family: var(--font-body); font-size: 14px;
+    background: rgba(242, 241, 238, 0.6); color: var(--notion-text);
+}
+.input-group input:focus { border-color: #2383E2; background: #fff; box-shadow: 0 0 0 2px rgba(35,131,226,0.25); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =============================================
+   12. RESPONSIVE
+   ============================================= */
+@media (max-width: 1024px) {
+    .main-content { padding: 32px 24px 80px; }
+}
+@media (max-width: 768px) {
+    .main-content { padding: 20px 16px 80px; }
+    .stats-container { grid-template-columns: 1fr; }
+    .header-text h1 { font-size: 30px; }
+    .prop-key { width: 110px; }
+    .scan-card, .modal-box { width: 90% !important; max-width: 90% !important; }
+    .scan-grid { grid-template-columns: 1fr; }
+    .info-block.full { grid-column: span 1; }
+}
+
+/* =============================================
+   13. MODERN TABLE (DataTables)
+   ============================================= */
+.modern-table { border-collapse: collapse; width: 100%; border-top: 1px solid var(--notion-border); }
+.modern-table thead th {
+    background: transparent; color: var(--notion-muted); font-size: 13px; font-weight: 400;
+    text-align: left; border-bottom: 1px solid var(--notion-border); border-right: 1px solid var(--notion-border);
+    padding: 7px 12px;
+}
+.modern-table tbody td {
+    padding: 9px 12px; font-size: 14px; color: var(--notion-text);
+    border-bottom: 1px solid var(--notion-border); border-right: 1px solid var(--notion-border); vertical-align: middle;
+}
+.modern-table thead th:last-child, .modern-table tbody td:last-child { border-right: none; }
+.modern-table tbody tr:hover td { background: rgba(55, 53, 47, 0.03); }
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
+
+
+/* =====================================================================
+   14. TOPBAR, BREADCRUMB, COVER, ICON  (khas Notion)
+   ===================================================================== */
+.main-content.has-topbar { padding: 0; }
+
+.page-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+}
+
+.topbar-toggle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--notion-muted);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.1s ease, transform 0.1s ease;
+    flex-shrink: 0;
+}
+.topbar-toggle:hover { background: var(--notion-hover); color: var(--notion-text); }
+.topbar-toggle:active { transform: scale(0.96); }
+
+.breadcrumb { display: flex; align-items: center; min-width: 0; font-size: 14px; line-height: 1.4; }
+.breadcrumb a, .breadcrumb .crumb-current {
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--notion-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.breadcrumb a:hover { background: var(--notion-hover); color: var(--notion-text); cursor: pointer; }
+.breadcrumb .crumb-current { color: var(--notion-text); font-weight: 500; }
+.breadcrumb .sep { color: var(--text-disabled); padding: 0 1px; user-select: none; }
+
+/* sembunyikan tombol hamburger lama yang disisipkan otomatis oleh app_shell.js */
+.top-bar > .mobile-menu-btn { display: none !important; }
+
+/* Cover banner */
+.page-cover {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    overflow: hidden;
+    background: var(--cover, linear-gradient(120deg, #E3EEF5 0%, #EDE7F3 52%, #F6E9E2 100%));
+    transition: background 0.3s ease;
+}
+.page-cover::before {            /* kisi titik halus */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(55,53,47,0.10) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), transparent 90%);
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), transparent 90%);
+}
+.page-cover::after {             /* bentuk organik minimalis */
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -90px;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.75), rgba(255,255,255,0) 70%);
+}
+.page-cover[data-cover="1"] { --cover: linear-gradient(120deg, #E6F1EA 0%, #E3EEF5 55%, #F1F1EF 100%); }
+.page-cover[data-cover="2"] { --cover: linear-gradient(120deg, #FBEFD5 0%, #F6E5E0 55%, #EDE7F3 100%); }
+.page-cover[data-cover="3"] { --cover: linear-gradient(120deg, #EDE7F3 0%, #E3EEF5 55%, #E6F1EA 100%); }
+
+.cover-change {
+    position: absolute;
+    right: 24px;
+    bottom: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--notion-muted);
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--notion-border);
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.1s ease, transform 0.1s ease;
+}
+.page-cover:hover .cover-change, .cover-change:focus-visible { opacity: 1; }
+.cover-change:hover { background: #fff; color: var(--notion-text); }
+.cover-change:active { transform: scale(0.98); }
+

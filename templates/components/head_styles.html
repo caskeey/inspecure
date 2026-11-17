@@ -1,0 +1,13 @@
+<!-- head_styles.html — font, sidebar.css, ikon Phosphor.
+     CSS basis komponen (dashboard.css) & tema global (notion.css) dimuat oleh base.html
+     SETELAH CSS per-halaman, supaya token & komponen Notion tidak tertimpa :root halaman. -->
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts/inter/inter.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+
+<!-- Icon Phosphor memakai stylesheet dan font lokal. Cuma load 3 weight yang
+     beneran dipakai template (ph-bold, ph-fill, ph-duotone) -- kalau
+     nanti nambah pakai weight lain (ph-thin, ph-light, ph, dst), tambahin
+     link style.css weight itu juga di sini. -->
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/bold.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/fill.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='fonts/phosphor/duotone.css') }}">

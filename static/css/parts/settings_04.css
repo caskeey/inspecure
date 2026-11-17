@@ -1,0 +1,70 @@
+@media (min-width: 768px) {
+    .profile-header-bg { height: 110px; }
+    .config-card { padding: var(--spacing-xl); }
+    .card-head { margin-bottom: 22px; }
+    .card-head h3 { font-size: 17px; }
+    .form-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+    .user-table th { font-size: 12px; padding: 11px 10px; }
+    .user-table td { padding: 14px 10px; }
+    .role-pill { font-size: 12px; }
+    .table-wrapper { margin: 0; padding: 0; }
+    .form-footer { flex-wrap: nowrap; }
+    .btn-primary-3d.full-width, .btn-ghost.full-width { width: auto; }
+}
+
+@media (min-width: 992px) {
+    .settings-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: var(--spacing-lg);
+        align-items: start;
+    }
+    .profile-card { position: sticky; top: 24px; }
+}
+
+@media (min-width: 1200px) {
+    .settings-layout { grid-template-columns: 340px 1fr; gap: 28px; }
+    .info-item { padding: 13px 0; }
+}
+
+@media (min-width: 1400px) {
+    .settings-layout { gap: 32px; }
+}
+
+/* =============================================
+   UTILITY
+   ============================================= */
+.hide-mobile { display: none; }
+@media (min-width: 768px) {
+    .hide-mobile { display: block; }
+    .hide-desktop { display: none; }
+}
+
+/* =============================================
+   ACCESSIBILITY
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.glass-input:focus,
+.btn-primary-3d:focus,
+.btn-ghost:focus,
+.btn-icon-s:focus,
+.close-btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* =============================================
+   PRINT
+   ============================================= */
+@media print {
+    .modal-backdrop, .btn-primary-3d, .btn-ghost, .btn-icon-s { display: none !important; }
+    .settings-layout { display: block; }
+    .config-card, .profile-card { page-break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% from 'components/macros.html' import page_header, props, prop, callout, section, toggle, db_view, tag with context %}
+
+{% set crumbs = [('Workspace', url_for('main.dashboard')), ('Aset', none), ('Database', none)] %}
+{% set canvas = 'full' %}
+
+{% block title %}Data Master - INSPECURE{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/data_master.css') }}">
+{% endblock %}
+
+{% block content %}
+            
+            {% call page_header('ph-database') %}
+    <h1 class="page-title">Database Aset</h1>
+    <p class="page-desc">Kelola seluruh data inventaris dan status sertifikasi.</p>
+    <div class="page-actions">
+        {% if session.get('role') == 'Admin' %}
+        <a href="{{ url_for('alat.tambah_alat') }}" class="btn-primary-3d">
+                        <i class="ph-bold ph-plus-circle"></i> <span>Data Baru</span>
+                    </a>
+        {% endif %}
+    </div>
+{% endcall %}
+
+            <div class="master-layout">
+                
+                <div class="glass-panel filter-panel">
+                    <div class="filter-header" onclick="toggleFilter()">
+                        <h4><i class="ph-duotone ph-faders"></i> Advanced Filter</h4>
+                        <i class="ph-bold ph-caret-down toggle-icon"></i>
+                    </div>
+                    
+                    <div class="filter-body" id="filterBody">
+                        <div class="filter-grid">
+                            <div class="filter-group">
+                                <label>Waktu Expired</label>
+                                <div class="row-inputs">
+                                    <select id="f-day" class="inp-f glass-input"><option value="">Tgl</option></select>
+                                    <select id="f-month" class="inp-f glass-input">
+                                        <option value="">Bulan</option>
+                                        <option value="01">Januari</option><option value="02">Februari</option>
+                                        <option value="03">Maret</option><option value="04">April</option>
+                                        <option value="05">Mei</option><option value="06">Juni</option>
+                                        <option value="07">Juli</option><option value="08">Agustus</option>
+                                        <option value="09">September</option><option value="10">Oktober</option>
+                                        <option value="11">November</option><option value="12">Desember</option>
+                                    </select>
+                                    <input type="number" id="f-year" class="inp-f glass-input" placeholder="Tahun">
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label>Kategori</label>
+                                <select id="f-pekerjaan" class="inp-f glass-input"><option value="">Semua Kategori</option></select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Jenis Alat</label>
+                                <select id="f-alat" class="inp-f glass-input"><option value="">Semua Jenis</option></select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Perusahaan</label>
+                                <select id="f-perusahaan" class="inp-f glass-input"><option value="">Semua Perusahaan</option></select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Status Sertifikasi</label>
+                                <select id="f-status" class="inp-f glass-input">
+                                    <option value="">Semua Status</option>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Masa Resertifikasi">Re-Sertifikasi</option>
+                                    <option value="Expired">Expired</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-footer">
+                            <button id="resetFilter" class="btn-ghost">
+                                <i class="ph-bold ph-arrow-counter-clockwise"></i> Reset Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel table-section db-view" data-view="table" data-views="table,list,gallery" data-search="0" data-key="aset">
+                    <div class="table-responsive">
+                        <table id="masterTable" class="modern-table" style="width:100%"
+                               data-api-url="{{ url_for('alat.api_data_master') }}"
+                               data-filter-options-url="{{ url_for('alat.api_data_master_filter_options') }}"
+                               data-detail-url="{{ url_for('alat.detail_alat', id=0) }}"
+                               data-edit-url="{{ url_for('alat.edit_alat', id=0) }}"
+                               data-resertifikasi-url="{{ url_for('alat.resertifikasi_alat', id=0) }}"
+                               data-delete-url="{{ url_for('alat.hapus_alat', id=0) }}"
+                               data-csrf-token="{{ csrf_token() }}"
+                               data-is-admin="{{ 'true' if session.get('role') == 'Admin' else 'false' }}">
+                            <thead>
+                                <tr>
+                                    <th>UID / Tag</th>
+                                    <th>Nama Alat</th>
+                                    <th>Nomor Seri</th>
+                                    <th>Pekerjaan</th>
+                                    <th>Jenis</th>
+                                    <th>Perusahaan</th>
+                                    <th>Expired</th>
+                                    <th>Status</th>
+                                    {% if session.get('role') == 'Admin' %}
+                                    <th class="text-center">Aksi</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        
+{% endblock %}
+
+{% block after_shell %}
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+    <script src="{{ url_for('static', filename='js/data_master_server.js') }}"></script>
+{% endblock %}

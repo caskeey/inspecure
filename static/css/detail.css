@@ -1,0 +1,3 @@
+/* Entry point: aturan dipisah menurut urutan aslinya di static/css/parts. */
+@import url("parts/detail_01.css"); /* 185 baris */
+@import url("parts/detail_02.css"); /* 153 baris */
