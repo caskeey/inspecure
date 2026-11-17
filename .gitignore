@@ -27,3 +27,6 @@ static/backups/
 .DS_Store
 Thumbs.db
 *.zip
+BAB_IV_Implementasi_Perangkat_Lunak.md
+CODE_MAP.md
+DEPLOY_SYNOLOGY.md
